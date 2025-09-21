@@ -1,16 +1,17 @@
+
 import { StyleSheet, ViewStyle, TextStyle } from 'react-native';
 
 export const colors = {
-  primary: '#2E7D32',    // Green for academic feel
-  secondary: '#1976D2',  // Blue for accents
-  accent: '#4CAF50',     // Light Green
+  primary: '#87CEEB',    // Sky blue as primary color
+  secondary: '#4FC3F7',  // Lighter sky blue for accents
+  accent: '#29B6F6',     // Darker sky blue for emphasis
   background: '#FFFFFF', // White background for light theme
-  backgroundAlt: '#F5F5F5', // Light grey background
+  backgroundAlt: '#F0F8FF', // Alice blue background
   text: '#212121',       // Dark text for readability
   textSecondary: '#757575', // Secondary text color
   grey: '#E0E0E0',       // Light grey
   card: '#FFFFFF',       // White card background
-  border: '#E0E0E0',     // Border color
+  border: '#B3E5FC',     // Light sky blue border
   success: '#4CAF50',    // Success green
   warning: '#FF9800',    // Warning orange
   error: '#F44336',      // Error red
@@ -102,7 +103,7 @@ export const commonStyles = StyleSheet.create({
     padding: 16,
     marginVertical: 8,
     width: '100%',
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0px 2px 8px rgba(135, 206, 235, 0.2)',
     elevation: 3,
   },
   searchContainer: {
