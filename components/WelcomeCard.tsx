@@ -33,8 +33,7 @@ const WelcomeCard: React.FC<WelcomeCardProps> = ({ onDismiss }) => {
       
       <Text style={styles.title}>Soo dhawoow!</Text>
       <Text style={styles.description}>
-        Waxaad ku soo dhaweysantahay Qaamuuska Suugaanta Soomaaliyeed. 
-        Halkan waxaad ka heli kartaa erayo muhiim ah oo ku saabsan suugaanta Soomaaliyeed.
+        Ku soo dhowoow Qaamuuska suugaanta Soomaaliyeed, halkaan waxaad ka heleysaa erey bixinta dhammaan suugaanta Afka Soomaaliga
       </Text>
       
       <View style={styles.features}>
