@@ -5,8 +5,10 @@ import { colors, commonStyles } from '../styles/commonStyles';
 import Icon from './Icon';
 import Button from './Button';
 import SimpleBottomSheet from './BottomSheet';
+import ContributionsManagement from './ContributionsManagement';
 import { User } from '../types/user';
 import { authService } from '../services/authService';
+import { contributionService } from '../services/contributionService';
 
 interface AdminPanelProps {
   isVisible: boolean;
@@ -44,9 +46,11 @@ const styles = StyleSheet.create({
   },
   statsContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 12,
   },
   statCard: {
+    minWidth: '22%',
     flex: 1,
     backgroundColor: colors.backgroundAlt,
     padding: 16,
@@ -127,10 +131,13 @@ const styles = StyleSheet.create({
 export default function AdminPanel({ isVisible, onClose, currentUser, entriesCount }: AdminPanelProps) {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isContributionsVisible, setIsContributionsVisible] = useState(false);
+  const [contributionsStats, setContributionsStats] = useState({ total: 0, pending: 0, approved: 0, rejected: 0 });
 
   useEffect(() => {
     if (isVisible) {
       loadUsers();
+      loadContributionsStats();
     }
   }, [isVisible]);
 
@@ -144,6 +151,16 @@ export default function AdminPanel({ isVisible, onClose, currentUser, entriesCou
       console.error('Error loading users:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const loadContributionsStats = async () => {
+    try {
+      const stats = await contributionService.getContributionsStats();
+      setContributionsStats(stats);
+      console.log('Loaded contributions stats:', stats);
+    } catch (error) {
+      console.error('Error loading contributions stats:', error);
     }
   };
 
@@ -198,7 +215,47 @@ export default function AdminPanel({ isVisible, onClose, currentUser, entriesCou
               <Text style={styles.statNumber}>{adminUsers.length}</Text>
               <Text style={styles.statLabel}>Admin-no</Text>
             </View>
+            <View style={styles.statCard}>
+              <Text style={[styles.statNumber, { color: colors.warning }]}>{contributionsStats.pending}</Text>
+              <Text style={styles.statLabel}>Sugaya</Text>
+            </View>
           </View>
+        </View>
+
+        {/* Contributions Management */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Wixii la soo diray</Text>
+          <TouchableOpacity
+            style={[styles.userCard, { backgroundColor: contributionsStats.pending > 0 ? '#FEF3C7' : colors.backgroundAlt }]}
+            onPress={() => setIsContributionsVisible(true)}
+          >
+            <View style={styles.userInfo}>
+              <Text style={styles.userName}>Maamul wixii la soo diray</Text>
+              <Text style={styles.userEmail}>
+                {contributionsStats.total} wadarta, {contributionsStats.pending} sugaya
+              </Text>
+              {contributionsStats.pending > 0 && (
+                <Text style={[styles.userRole, { color: colors.warning }]}>
+                  {contributionsStats.pending} SUGAYA EEGISTA
+                </Text>
+              )}
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              {contributionsStats.pending > 0 && (
+                <View style={{
+                  backgroundColor: colors.warning,
+                  borderRadius: 12,
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
+                }}>
+                  <Text style={{ color: colors.text, fontSize: 12, fontWeight: '600' }}>
+                    {contributionsStats.pending}
+                  </Text>
+                </View>
+              )}
+              <Icon name="chevron-forward" size={20} color={colors.textSecondary} />
+            </View>
+          </TouchableOpacity>
         </View>
 
         {/* Admin Users */}
@@ -243,6 +300,15 @@ export default function AdminPanel({ isVisible, onClose, currentUser, entriesCou
           </Text>
         </View>
       </ScrollView>
+
+      {/* Contributions Management Modal */}
+      <ContributionsManagement
+        isVisible={isContributionsVisible}
+        onClose={() => {
+          setIsContributionsVisible(false);
+          loadContributionsStats(); // Refresh stats when closing
+        }}
+      />
     </SimpleBottomSheet>
   );
 }

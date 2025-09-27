@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Text, View, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, ImageBackground } from 'react-native';
+import { Text, View, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, ImageBackground, Alert } from 'react-native';
 import { commonStyles, colors } from '../styles/commonStyles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from '../components/Icon';
@@ -439,10 +439,21 @@ export default function MainScreen() {
           <ContributionBottomSheet
             isVisible={isContributionVisible}
             onClose={() => setIsContributionVisible(false)}
-            onSubmit={(contribution) => {
+            onSubmit={async (contribution) => {
               console.log('New contribution submitted:', contribution);
+              const { contributionService } = await import('../services/contributionService');
+              const result = await contributionService.saveContribution({
+                ...contribution,
+                submittedBy: user?.username
+              });
+              
+              if (result.success) {
+                Alert.alert('Guul', result.message);
+              } else {
+                Alert.alert('Khalad', result.message);
+              }
+              
               setIsContributionVisible(false);
-              // Here you would typically send the contribution to admin for review
             }}
           />
         )}

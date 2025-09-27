@@ -342,6 +342,39 @@ export default function SettingsBottomSheet({
           )}
         </View>
 
+        {/* App Info */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Macluumaadka App-ka</Text>
+          
+          <View style={styles.settingItem}>
+            <View style={styles.settingIcon}>
+              <Icon name="information-circle" size={24} color={colors.primary} />
+            </View>
+            <View style={styles.settingContent}>
+              <Text style={styles.settingTitle}>
+                Qaamuuska Suugaanta Soomaaliyeed
+              </Text>
+              <Text style={styles.settingDescription}>
+                Nooca 1.0.0 - Horumariyay Natively
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.settingItem}>
+            <View style={styles.settingIcon}>
+              <Icon name="heart" size={24} color="#EF4444" />
+            </View>
+            <View style={styles.settingContent}>
+              <Text style={styles.settingTitle}>
+                La sameeyay jacayl
+              </Text>
+              <Text style={styles.settingDescription}>
+                Si loo horumariyo afka iyo dhaqanka Soomaaliyeed
+              </Text>
+            </View>
+          </View>
+        </View>
+
         {/* Account */}
         {onLogout && (
           <View style={styles.section}>
