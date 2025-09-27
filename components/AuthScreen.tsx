@@ -76,6 +76,26 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     backgroundColor: colors.skyBlue,
   },
+  passwordContainer: {
+    position: 'relative',
+  },
+  passwordInput: {
+    backgroundColor: colors.skyBlue,
+    borderRadius: 12,
+    padding: 16,
+    paddingRight: 50,
+    fontSize: 16,
+    color: colors.background,
+    borderWidth: 1,
+    borderColor: colors.border,
+    fontFamily: 'Inter_400Regular',
+  },
+  passwordToggle: {
+    position: 'absolute',
+    right: 16,
+    top: '50%',
+    transform: [{ translateY: -12 }],
+  },
   verificationContainer: {
     backgroundColor: colors.backgroundAlt,
     borderRadius: 12,
@@ -168,6 +188,11 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
   const [verificationCode, setVerificationCode] = useState('');
   const [pendingUserData, setPendingUserData] = useState<NewUser | null>(null);
   
+  // Password visibility states
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
   // Login form state - simplified to only email and password
   const [loginData, setLoginData] = useState<LoginCredentials>({
     username: '',
@@ -188,8 +213,8 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
       return;
     }
 
-    // Check if email is verified (skip for admin)
-    if (loginData.username !== 'admin@admin.com') {
+    // Check if email is verified (skip for admin accounts)
+    if (loginData.username !== 'admin@admin.com' && loginData.username !== 'qoofaljabshe@gmail.com') {
       const isVerified = await verificationService.isEmailVerified(loginData.username);
       if (!isVerified) {
         Alert.alert(
@@ -420,21 +445,33 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>lambarka sirta ah</Text>
-        <TextInput
-          style={[
-            styles.input,
-            focusedInput === 'password' && styles.inputFocused
-          ]}
-          placeholder="Gali lambarka sirta ah"
-          placeholderTextColor={colors.grey}
-          value={loginData.password}
-          onChangeText={(text) => setLoginData({ ...loginData, password: text })}
-          onFocus={() => setFocusedInput('password')}
-          onBlur={() => setFocusedInput(null)}
-          secureTextEntry
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={[
+              styles.passwordInput,
+              focusedInput === 'password' && styles.inputFocused
+            ]}
+            placeholder="Gali lambarka sirta ah"
+            placeholderTextColor={colors.grey}
+            value={loginData.password}
+            onChangeText={(text) => setLoginData({ ...loginData, password: text })}
+            onFocus={() => setFocusedInput('password')}
+            onBlur={() => setFocusedInput(null)}
+            secureTextEntry={!showLoginPassword}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          <TouchableOpacity
+            style={styles.passwordToggle}
+            onPress={() => setShowLoginPassword(!showLoginPassword)}
+          >
+            <Icon 
+              name={showLoginPassword ? "eye-off" : "eye"} 
+              size={20} 
+              color={colors.background} 
+            />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <Button
@@ -487,40 +524,64 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>lambarka sirta ah</Text>
-        <TextInput
-          style={[
-            styles.input,
-            focusedInput === 'reg_password' && styles.inputFocused
-          ]}
-          placeholder="Samee furaha sirta ah (ugu yaraan 6 xaraf)"
-          placeholderTextColor={colors.grey}
-          value={registerData.password}
-          onChangeText={(text) => setRegisterData({ ...registerData, password: text })}
-          onFocus={() => setFocusedInput('reg_password')}
-          onBlur={() => setFocusedInput(null)}
-          secureTextEntry
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={[
+              styles.passwordInput,
+              focusedInput === 'reg_password' && styles.inputFocused
+            ]}
+            placeholder="Samee furaha sirta ah (ugu yaraan 6 xaraf)"
+            placeholderTextColor={colors.grey}
+            value={registerData.password}
+            onChangeText={(text) => setRegisterData({ ...registerData, password: text })}
+            onFocus={() => setFocusedInput('reg_password')}
+            onBlur={() => setFocusedInput(null)}
+            secureTextEntry={!showRegisterPassword}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          <TouchableOpacity
+            style={styles.passwordToggle}
+            onPress={() => setShowRegisterPassword(!showRegisterPassword)}
+          >
+            <Icon 
+              name={showRegisterPassword ? "eye-off" : "eye"} 
+              size={20} 
+              color={colors.background} 
+            />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>xaqiiji lambarka sirta ah</Text>
-        <TextInput
-          style={[
-            styles.input,
-            focusedInput === 'confirm_password' && styles.inputFocused
-          ]}
-          placeholder="Ku celi lambarka sirta ah"
-          placeholderTextColor={colors.grey}
-          value={registerData.confirmPassword}
-          onChangeText={(text) => setRegisterData({ ...registerData, confirmPassword: text })}
-          onFocus={() => setFocusedInput('confirm_password')}
-          onBlur={() => setFocusedInput(null)}
-          secureTextEntry
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={[
+              styles.passwordInput,
+              focusedInput === 'confirm_password' && styles.inputFocused
+            ]}
+            placeholder="Ku celi lambarka sirta ah"
+            placeholderTextColor={colors.grey}
+            value={registerData.confirmPassword}
+            onChangeText={(text) => setRegisterData({ ...registerData, confirmPassword: text })}
+            onFocus={() => setFocusedInput('confirm_password')}
+            onBlur={() => setFocusedInput(null)}
+            secureTextEntry={!showConfirmPassword}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          <TouchableOpacity
+            style={styles.passwordToggle}
+            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+          >
+            <Icon 
+              name={showConfirmPassword ? "eye-off" : "eye"} 
+              size={20} 
+              color={colors.background} 
+            />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <Button
@@ -590,6 +651,9 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
               <Text style={{ fontWeight: '600' }}>Xusuusin:</Text> Admin-ka default-ka ah:{'\n'}
               Email: admin@admin.com{'\n'}
               Lambarka sirta ah: admin123{'\n\n'}
+              <Text style={{ fontWeight: '600' }}>Admin cusub:</Text>{'\n'}
+              Email: qoofaljabshe@gmail.com{'\n'}
+              Lambarka sirta ah: Qoofal123{'\n\n'}
               <Text style={{ fontWeight: '600' }}>Muhiim:</Text> Email xaqiijinta waa lagama maarmaan ah dhammaan isticmaalayaasha cusub.
             </Text>
           </View>

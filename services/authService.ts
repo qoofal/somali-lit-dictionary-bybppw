@@ -6,11 +6,20 @@ import { verificationService } from './verificationService';
 const USERS_STORAGE_KEY = 'somali_dictionary_users';
 const CURRENT_USER_KEY = 'somali_dictionary_current_user';
 
-// Default admin user
+// Default admin users
 const DEFAULT_ADMIN: User = {
   id: 'admin_001',
   username: 'admin',
   email: 'admin@admin.com',
+  role: 'admin',
+  dateCreated: new Date('2024-01-01'),
+  lastLogin: new Date()
+};
+
+const NEW_ADMIN: User = {
+  id: 'admin_002',
+  username: 'qoofal_admin',
+  email: 'qoofaljabshe@gmail.com',
   role: 'admin',
   dateCreated: new Date('2024-01-01'),
   lastLogin: new Date()
@@ -31,17 +40,39 @@ export const authService = {
     try {
       const users = await this.loadUsers();
       if (users.length === 0) {
-        // Create default admin user
+        // Create default admin users
         const adminWithPassword = {
           ...DEFAULT_ADMIN,
           password: hashPassword('admin123') // Default admin password
         };
-        await AsyncStorage.setItem(USERS_STORAGE_KEY, JSON.stringify([adminWithPassword]));
+
+        const newAdminWithPassword = {
+          ...NEW_ADMIN,
+          password: hashPassword('Qoofal123') // New admin password
+        };
         
-        // Mark admin email as verified by default
+        await AsyncStorage.setItem(USERS_STORAGE_KEY, JSON.stringify([adminWithPassword, newAdminWithPassword]));
+        
+        // Mark admin emails as verified by default
         await verificationService.markEmailAsVerified(DEFAULT_ADMIN.email);
+        await verificationService.markEmailAsVerified(NEW_ADMIN.email);
         
-        console.log('Default admin user created with email: admin@admin.com, password: admin123');
+        console.log('Default admin users created:');
+        console.log('1. Email: admin@admin.com, Password: admin123');
+        console.log('2. Email: qoofaljabshe@gmail.com, Password: Qoofal123');
+      } else {
+        // Check if new admin exists, if not add it
+        const existingNewAdmin = users.find(u => u.email === NEW_ADMIN.email);
+        if (!existingNewAdmin) {
+          const newAdminWithPassword = {
+            ...NEW_ADMIN,
+            password: hashPassword('Qoofal123')
+          };
+          users.push(newAdminWithPassword);
+          await this.saveUsers(users);
+          await verificationService.markEmailAsVerified(NEW_ADMIN.email);
+          console.log('New admin account added: qoofaljabshe@gmail.com');
+        }
       }
       
       // Clean up expired verification codes on startup
