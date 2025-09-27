@@ -17,9 +17,10 @@ interface AddTermBottomSheetProps {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    maxHeight: '100%',
   },
   scrollContent: {
-    paddingBottom: 100, // Add extra padding at bottom to ensure buttons are visible
+    paddingBottom: 120, // Increased padding to ensure buttons are visible
   },
   title: {
     fontSize: 20,
@@ -120,11 +121,16 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     gap: 12,
-    marginTop: 24,
     paddingTop: 16,
+    paddingBottom: 16,
+    paddingHorizontal: 16,
     borderTopWidth: 1,
     borderTopColor: colors.border,
     backgroundColor: colors.background,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   adminWarning: {
     backgroundColor: colors.backgroundAlt,
@@ -183,7 +189,7 @@ export default function AddTermBottomSheet({
   };
 
   const handleSubmit = () => {
-    console.log('Submit button pressed');
+    console.log('Kaydi button pressed - attempting to save');
     console.log('Word:', word.trim());
     console.log('Definition:', definition.trim());
     
@@ -419,7 +425,7 @@ export default function AddTermBottomSheet({
           </View>
         </ScrollView>
 
-        {/* Fixed button container at the bottom */}
+        {/* Fixed button container at the bottom - now positioned absolutely */}
         <View style={styles.buttonContainer}>
           <Button
             text="Jooji"
@@ -430,7 +436,11 @@ export default function AddTermBottomSheet({
           <Button
             text="Kaydi"
             onPress={handleSubmit}
-            style={{ flex: 1 }}
+            style={{ 
+              flex: 1,
+              backgroundColor: colors.primary,
+            }}
+            textStyle={{ color: colors.text }}
             disabled={!word.trim() || !definition.trim()}
           />
         </View>
