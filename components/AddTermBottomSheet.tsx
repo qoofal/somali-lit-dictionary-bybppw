@@ -196,9 +196,11 @@ export default function AddTermBottomSheet({
       poemText: poemText.trim() || undefined,
     };
 
+    console.log('Attempting to save new term:', newEntry.word);
     onAddTerm(newEntry);
     resetForm();
-    console.log('New term submitted:', newEntry.word);
+    onClose();
+    console.log('New term saved successfully:', newEntry.word);
   };
 
   const handleClose = () => {
@@ -243,15 +245,6 @@ export default function AddTermBottomSheet({
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Ku dar Erey Cusub</Text>
 
-        {!isAdmin && (
-          <View style={styles.adminWarning}>
-            <Icon name="information-circle" size={24} color={colors.textSecondary} />
-            <Text style={styles.adminWarningText}>
-              Kaliya admin-ada ayaa ku dari kara erayo cusub. La xiriir admin-ka si aad u hesho fasax.
-            </Text>
-          </View>
-        )}
-
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Ereyga *</Text>
           <TextInput
@@ -260,7 +253,6 @@ export default function AddTermBottomSheet({
             onChangeText={setWord}
             placeholder="Gali ereyga cusub"
             placeholderTextColor={colors.grey}
-            editable={isAdmin}
           />
         </View>
 
@@ -273,7 +265,6 @@ export default function AddTermBottomSheet({
             placeholder="Sharax macnaha ereyga"
             placeholderTextColor={colors.grey}
             multiline
-            editable={isAdmin}
           />
         </View>
 
@@ -286,7 +277,6 @@ export default function AddTermBottomSheet({
             placeholder="Sharax sida ereyga loo isticmaalo suugaanta"
             placeholderTextColor={colors.grey}
             multiline
-            editable={isAdmin}
           />
         </View>
 
@@ -300,8 +290,7 @@ export default function AddTermBottomSheet({
                   styles.categoryButton,
                   category === cat.key && styles.categoryButtonActive,
                 ]}
-                onPress={() => isAdmin && setCategory(cat.key as any)}
-                disabled={!isAdmin}
+                onPress={() => setCategory(cat.key as any)}
               >
                 <Text
                   style={[
@@ -326,7 +315,6 @@ export default function AddTermBottomSheet({
                 onChangeText={setPoetName}
                 placeholder="Gali magaca gabyaaga"
                 placeholderTextColor={colors.grey}
-                editable={isAdmin}
               />
             </View>
 
@@ -339,7 +327,6 @@ export default function AddTermBottomSheet({
                 placeholder="Sharax taariikhda gabayga"
                 placeholderTextColor={colors.grey}
                 multiline
-                editable={isAdmin}
               />
             </View>
 
@@ -352,7 +339,6 @@ export default function AddTermBottomSheet({
                 placeholder="Qor gabayga ama qayb ka mid ah"
                 placeholderTextColor={colors.grey}
                 multiline
-                editable={isAdmin}
               />
             </View>
           </>
@@ -369,21 +355,18 @@ export default function AddTermBottomSheet({
                   onChangeText={(value) => updateExample(index, value)}
                   placeholder={`Tusaale ${index + 1}`}
                   placeholderTextColor={colors.grey}
-                  editable={isAdmin}
                 />
-                {examples.length > 1 && isAdmin && (
+                {examples.length > 1 && (
                   <TouchableOpacity onPress={() => removeExample(index)}>
                     <Icon name="close-circle" size={20} color={colors.textSecondary} />
                   </TouchableOpacity>
                 )}
               </View>
             ))}
-            {isAdmin && (
-              <TouchableOpacity style={styles.addButton} onPress={addExample}>
-                <Icon name="add" size={16} color={colors.textSecondary} />
-                <Text style={styles.addButtonText}>Ku dar tusaale</Text>
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity style={styles.addButton} onPress={addExample}>
+              <Icon name="add" size={16} color={colors.textSecondary} />
+              <Text style={styles.addButtonText}>Ku dar tusaale</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -398,21 +381,18 @@ export default function AddTermBottomSheet({
                   onChangeText={(value) => updateSynonym(index, value)}
                   placeholder={`Erey la mid ah ${index + 1}`}
                   placeholderTextColor={colors.grey}
-                  editable={isAdmin}
                 />
-                {synonyms.length > 1 && isAdmin && (
+                {synonyms.length > 1 && (
                   <TouchableOpacity onPress={() => removeSynonym(index)}>
                     <Icon name="close-circle" size={20} color={colors.textSecondary} />
                   </TouchableOpacity>
                 )}
               </View>
             ))}
-            {isAdmin && (
-              <TouchableOpacity style={styles.addButton} onPress={addSynonym}>
-                <Icon name="add" size={16} color={colors.textSecondary} />
-                <Text style={styles.addButtonText}>Ku dar erey la mid ah</Text>
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity style={styles.addButton} onPress={addSynonym}>
+              <Icon name="add" size={16} color={colors.textSecondary} />
+              <Text style={styles.addButtonText}>Ku dar erey la mid ah</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -424,10 +404,10 @@ export default function AddTermBottomSheet({
             textStyle={{ color: colors.textSecondary }}
           />
           <Button
-            text="Ku dar"
+            text="Kaydi"
             onPress={handleSubmit}
             style={{ flex: 1 }}
-            disabled={!isAdmin || !word.trim() || !definition.trim()}
+            disabled={!word.trim() || !definition.trim()}
           />
         </View>
       </ScrollView>
