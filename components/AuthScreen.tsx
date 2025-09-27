@@ -120,10 +120,11 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
   });
 
   // Register form state
-  const [registerData, setRegisterData] = useState<NewUser>({
+  const [registerData, setRegisterData] = useState<NewUser & { confirmPassword: string }>({
     username: '',
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   });
 
   const handleLogin = async () => {
@@ -147,8 +148,13 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
   };
 
   const handleRegister = async () => {
-    if (!registerData.username.trim() || !registerData.email.trim() || !registerData.password.trim()) {
+    if (!registerData.username.trim() || !registerData.email.trim() || !registerData.password.trim() || !registerData.confirmPassword.trim()) {
       Alert.alert('Khalad', 'Fadlan buuxi dhammaan goobaha');
+      return;
+    }
+
+    if (registerData.password !== registerData.confirmPassword) {
+      Alert.alert('Khalad', 'Lambarka sirta ah iyo xaqiijinta ma isku mid aha');
       return;
     }
 
@@ -159,7 +165,8 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
 
     setIsLoading(true);
     try {
-      const result = await onRegister(registerData);
+      const { confirmPassword, ...userData } = registerData;
+      const result = await onRegister(userData);
       if (result.success) {
         Alert.alert('Guul', result.message);
       } else {
@@ -213,7 +220,7 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
       </View>
 
       <Button
-        text={isLoading ? "Galo..." : "Galo"}
+        text={isLoading ? "Galo..." : "Gal"}
         onPress={handleLogin}
         disabled={isLoading}
         style={{ marginTop: 8 }}
@@ -224,7 +231,7 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
   const renderRegisterForm = () => (
     <View style={styles.form}>
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Magaca Isticmaalaha</Text>
+        <Text style={styles.label}>magaca oo saddexan</Text>
         <TextInput
           style={[
             styles.input,
@@ -242,7 +249,7 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
       </View>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Email</Text>
+        <Text style={styles.label}>email</Text>
         <TextInput
           style={[
             styles.input,
@@ -261,7 +268,7 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
       </View>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Furaha Sirta ah</Text>
+        <Text style={styles.label}>lambarka sirta ah</Text>
         <TextInput
           style={[
             styles.input,
@@ -279,8 +286,27 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
         />
       </View>
 
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>xaqiiji lambarka sirta ah</Text>
+        <TextInput
+          style={[
+            styles.input,
+            focusedInput === 'confirm_password' && styles.inputFocused
+          ]}
+          placeholder="Ku celi lambarka sirta ah"
+          placeholderTextColor={colors.textSecondary}
+          value={registerData.confirmPassword}
+          onChangeText={(text) => setRegisterData({ ...registerData, confirmPassword: text })}
+          onFocus={() => setFocusedInput('confirm_password')}
+          onBlur={() => setFocusedInput(null)}
+          secureTextEntry
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+      </View>
+
       <Button
-        text={isLoading ? "Diiwaangeli..." : "Diiwaangeli"}
+        text={isLoading ? "Diiwaangeli..." : "diiwaangeli"}
         onPress={handleRegister}
         disabled={isLoading}
         style={{ marginTop: 8 }}
@@ -300,7 +326,7 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
           </View>
           <Text style={styles.title}>Qaamuuska Suugaanta</Text>
           <Text style={styles.subtitle}>
-            {isLogin ? 'Gali akoonkaaga si aad u hesho qaamuuska' : 'Samee akoon cusub'}
+            {isLogin ? 'Gali akoonkaaga si aad u hesho qaamuuska' : 'is diiwaan gali'}
           </Text>
         </View>
 
@@ -312,7 +338,7 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
           </Text>
           <TouchableOpacity onPress={() => setIsLogin(!isLogin)}>
             <Text style={styles.toggleButton}>
-              {isLogin ? 'Diiwaangeli' : 'Galo'}
+              {isLogin ? 'is diiwaan gali' : 'Gal'}
             </Text>
           </TouchableOpacity>
         </View>
