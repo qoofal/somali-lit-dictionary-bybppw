@@ -116,6 +116,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Inter_400Regular',
   },
+  editContainer: {
+    backgroundColor: colors.background,
+    padding: 16,
+    borderRadius: 12,
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: colors.primary,
+  },
+  editActions: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 12,
+  },
+  editButton: {
+    flex: 1,
+  },
+  cancelButton: {
+    backgroundColor: colors.textSecondary,
+  },
 });
 
 const CATEGORY_COLORS = [
@@ -140,6 +159,9 @@ export default function CategoryManagement({ isVisible, onClose, entries }: Cate
   const [newCategoryName, setNewCategoryName] = useState('');
   const [selectedColor, setSelectedColor] = useState(CATEGORY_COLORS[0]);
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
+  const [editingCategory, setEditingCategory] = useState<string | null>(null);
+  const [editCategoryName, setEditCategoryName] = useState('');
+  const [editCategoryColor, setEditCategoryColor] = useState(CATEGORY_COLORS[0]);
 
   // Get category statistics
   const categoryStats = entries.reduce((acc, entry) => {
@@ -161,24 +183,38 @@ export default function CategoryManagement({ isVisible, onClose, entries }: Cate
     console.log('New category added:', { name: newCategoryName, color: selectedColor });
   };
 
-  const handleDeleteCategory = (categoryName: string) => {
-    const count = categoryStats[categoryName] || 0;
-    Alert.alert(
-      'Xaqiiji',
-      `Ma hubtaa inaad rabto inaad tirtirto qaybta "${categoryName}"? Waxay ka kooban tahay ${count} eray.`,
-      [
-        { text: 'Maya', style: 'cancel' },
-        {
-          text: 'Haa, Tirtir',
-          style: 'destructive',
-          onPress: () => {
-            // In a real app, you would update all entries in this category
-            Alert.alert('Guul', `Qaybta "${categoryName}" waa la tirtiray`);
-            console.log('Category deleted:', categoryName);
-          }
-        }
-      ]
-    );
+  const handleEditCategory = (categoryName: string) => {
+    console.log('Starting to edit category:', categoryName);
+    setEditingCategory(categoryName);
+    setEditCategoryName(CATEGORY_LABELS[categoryName as keyof typeof CATEGORY_LABELS] || categoryName);
+    setEditCategoryColor(getCategoryColor(categoryName));
+  };
+
+  const handleSaveEdit = () => {
+    if (!editCategoryName.trim()) {
+      Alert.alert('Khalad', 'Fadlan gali magaca qaybta');
+      return;
+    }
+
+    // In a real app, you would update the category in your backend or local storage
+    Alert.alert('Guul', `Qaybta "${editingCategory}" waa la beddelay`);
+    console.log('Category edited:', { 
+      oldName: editingCategory, 
+      newName: editCategoryName, 
+      newColor: editCategoryColor 
+    });
+    
+    // Reset editing state
+    setEditingCategory(null);
+    setEditCategoryName('');
+    setEditCategoryColor(CATEGORY_COLORS[0]);
+  };
+
+  const handleCancelEdit = () => {
+    console.log('Cancelled editing category:', editingCategory);
+    setEditingCategory(null);
+    setEditCategoryName('');
+    setEditCategoryColor(CATEGORY_COLORS[0]);
   };
 
   const getCategoryColor = (category: string) => {
@@ -263,29 +299,84 @@ export default function CategoryManagement({ isVisible, onClose, entries }: Cate
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Qaybaha Jira ({Object.keys(categoryStats).length})</Text>
           {Object.entries(categoryStats).map(([category, count]) => (
-            <View key={category} style={styles.categoryCard}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-                <View 
-                  style={[
-                    styles.categoryColor, 
-                    { backgroundColor: getCategoryColor(category) }
-                  ]} 
-                />
-                <View style={styles.categoryInfo}>
-                  <Text style={styles.categoryName}>
-                    {CATEGORY_LABELS[category as keyof typeof CATEGORY_LABELS] || category}
-                  </Text>
-                  <Text style={styles.categoryCount}>
-                    {count} eray
-                  </Text>
+            <View key={category}>
+              <View style={styles.categoryCard}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                  <View 
+                    style={[
+                      styles.categoryColor, 
+                      { backgroundColor: getCategoryColor(category) }
+                    ]} 
+                  />
+                  <View style={styles.categoryInfo}>
+                    <Text style={styles.categoryName}>
+                      {CATEGORY_LABELS[category as keyof typeof CATEGORY_LABELS] || category}
+                    </Text>
+                    <Text style={styles.categoryCount}>
+                      {count} eray
+                    </Text>
+                  </View>
                 </View>
+                <TouchableOpacity
+                  onPress={() => handleEditCategory(category)}
+                  style={{ padding: 8 }}
+                >
+                  <Icon name="create-outline" size={20} color={colors.primary} />
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                onPress={() => handleDeleteCategory(category)}
-                style={{ padding: 8 }}
-              >
-                <Icon name="trash-outline" size={20} color="#DC2626" />
-              </TouchableOpacity>
+
+              {/* Edit Form */}
+              {editingCategory === category && (
+                <View style={styles.editContainer}>
+                  <Text style={[commonStyles.text, { marginBottom: 12, fontWeight: '600' }]}>
+                    Wax ka beddel qaybta:
+                  </Text>
+                  
+                  <TextInput
+                    style={[
+                      styles.input,
+                      focusedInput === `edit-${category}` && styles.inputFocused
+                    ]}
+                    placeholder="Magaca qaybta"
+                    placeholderTextColor={colors.grey}
+                    value={editCategoryName}
+                    onChangeText={setEditCategoryName}
+                    onFocus={() => setFocusedInput(`edit-${category}`)}
+                    onBlur={() => setFocusedInput(null)}
+                  />
+                  
+                  <Text style={[commonStyles.text, { marginBottom: 8, fontWeight: '600' }]}>
+                    Dooro midab cusub:
+                  </Text>
+                  <View style={styles.colorPicker}>
+                    {CATEGORY_COLORS.map((color) => (
+                      <TouchableOpacity
+                        key={color}
+                        style={[
+                          styles.colorOption,
+                          { backgroundColor: color },
+                          editCategoryColor === color && styles.colorOptionSelected
+                        ]}
+                        onPress={() => setEditCategoryColor(color)}
+                      />
+                    ))}
+                  </View>
+                  
+                  <View style={styles.editActions}>
+                    <Button
+                      text="Kaydi"
+                      onPress={handleSaveEdit}
+                      disabled={!editCategoryName.trim()}
+                      style={styles.editButton}
+                    />
+                    <Button
+                      text="Ka noqo"
+                      onPress={handleCancelEdit}
+                      style={[styles.editButton, styles.cancelButton]}
+                    />
+                  </View>
+                </View>
+              )}
             </View>
           ))}
         </View>
@@ -298,7 +389,8 @@ export default function CategoryManagement({ isVisible, onClose, entries }: Cate
               • Qaybaha waxay kaa caawinayaan inaad si fudud u raadiso ereyada{'\n'}
               • Midab kasta wuxuu matalaayaa qaybta gaar ah{'\n'}
               • Isticmaalayaasha waxay u isticmaali karaan qaybaha si ay u kala soocaan ereyada{'\n'}
-              • Kaliya admin-ada ayaa awood u leh inuu ku daro ama tirtiro qaybaha
+              • Kaliya admin-ada ayaa awood u leh inuu ku daro ama wax ka beddelo qaybaha{'\n'}
+              • Riix badhanka "Edit" si aad u beddesho magaca iyo midabka qaybta
             </Text>
           </View>
         </View>
