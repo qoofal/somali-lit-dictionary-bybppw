@@ -14,14 +14,18 @@ const DictionaryCard: React.FC<DictionaryCardProps> = ({ entry }) => {
 
   const getCategoryColor = (category?: string) => {
     switch (category) {
-      case 'literary_term':
+      case 'gabay':
         return colors.primary;
-      case 'noun':
+      case 'hees':
         return colors.secondary;
-      case 'verb':
+      case 'literary_term':
+        return colors.accent;
+      case 'noun':
         return colors.success;
-      case 'adjective':
+      case 'verb':
         return colors.warning;
+      case 'adjective':
+        return colors.error;
       default:
         return colors.textSecondary;
     }
@@ -29,6 +33,10 @@ const DictionaryCard: React.FC<DictionaryCardProps> = ({ entry }) => {
 
   const getCategoryLabel = (category?: string) => {
     switch (category) {
+      case 'gabay':
+        return 'Gabay';
+      case 'hees':
+        return 'Hees';
       case 'literary_term':
         return 'Eray Suugaan';
       case 'noun':
@@ -43,6 +51,8 @@ const DictionaryCard: React.FC<DictionaryCardProps> = ({ entry }) => {
         return 'Kale';
     }
   };
+
+  const isPoemCategory = entry.category === 'gabay' || entry.category === 'hees';
 
   return (
     <TouchableOpacity
@@ -75,6 +85,37 @@ const DictionaryCard: React.FC<DictionaryCardProps> = ({ entry }) => {
       {/* Expanded Content */}
       {isExpanded && (
         <View style={styles.expandedContent}>
+          {/* Poem Sub-categories (only for gabay and hees) */}
+          {isPoemCategory && (
+            <View style={styles.poemSection}>
+              {/* Poet's Name */}
+              {entry.poetName && (
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Magaca Gabyaaga:</Text>
+                  <Text style={styles.sectionText}>{entry.poetName}</Text>
+                </View>
+              )}
+
+              {/* Poem History */}
+              {entry.poemHistory && (
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Taariikhda Gabayga:</Text>
+                  <Text style={styles.sectionText}>{entry.poemHistory}</Text>
+                </View>
+              )}
+
+              {/* Poem Text */}
+              {entry.poemText && (
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Gabayga:</Text>
+                  <View style={styles.poemTextContainer}>
+                    <Text style={styles.poemText}>{entry.poemText}</Text>
+                  </View>
+                </View>
+              )}
+            </View>
+          )}
+
           {/* Literary Context */}
           {entry.literaryContext && (
             <View style={styles.section}>
@@ -149,11 +190,12 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 12,
-    fontWeight: '600',
-    color: colors.background,
+    fontWeight: '700',
+    color: colors.text,
   },
   definition: {
     fontSize: 16,
+    fontWeight: '600',
     color: colors.text,
     lineHeight: 24,
     marginBottom: 8,
@@ -164,22 +206,46 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors.border,
   },
+  poemSection: {
+    backgroundColor: colors.backgroundAlt,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
   section: {
     marginBottom: 16,
   },
   sectionTitle: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.primary,
     marginBottom: 6,
   },
   sectionText: {
     fontSize: 15,
+    fontWeight: '600',
     color: colors.text,
     lineHeight: 22,
   },
+  poemTextContainer: {
+    backgroundColor: colors.background,
+    borderRadius: 8,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  poemText: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: colors.text,
+    lineHeight: 24,
+    fontStyle: 'italic',
+  },
   exampleText: {
     fontSize: 15,
+    fontWeight: '500',
     color: colors.textSecondary,
     lineHeight: 22,
     marginBottom: 4,
@@ -200,6 +266,7 @@ const styles = StyleSheet.create({
   },
   synonymText: {
     fontSize: 14,
+    fontWeight: '600',
     color: colors.text,
   },
   footer: {
@@ -210,6 +277,7 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 12,
+    fontWeight: '500',
     color: colors.textSecondary,
     textAlign: 'right',
   },

@@ -17,6 +17,8 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
 }) => {
   const categories = [
     { value: null, label: 'Dhammaan', count: entries.length },
+    { value: 'gabay', label: 'Gabay', count: 0 },
+    { value: 'hees', label: 'Hees', count: 0 },
     { value: 'literary_term', label: 'Erayo Suugaan', count: 0 },
     { value: 'noun', label: 'Magacyo', count: 0 },
     { value: 'verb', label: 'Fallo', count: 0 },
@@ -100,12 +102,12 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.text,
   },
   categoryTextActive: {
-    color: colors.background,
-    fontWeight: '600',
+    color: colors.text,
+    fontWeight: '700',
   },
   countBadge: {
     backgroundColor: colors.border,
@@ -117,7 +119,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   countBadgeActive: {
-    backgroundColor: colors.background + '30',
+    backgroundColor: colors.text + '30',
   },
   countText: {
     fontSize: 12,
@@ -125,7 +127,7 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   countTextActive: {
-    color: colors.background,
+    color: colors.text,
   },
 });
 

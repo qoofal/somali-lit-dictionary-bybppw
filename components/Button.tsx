@@ -1,3 +1,4 @@
+
 import { Text, TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import { colors } from '../styles/commonStyles';
 
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginTop: 10,
     width: '100%',
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0px 2px 8px rgba(30, 58, 138, 0.3)',
     elevation: 3,
     alignItems: 'center',
     justifyContent: 'center',
@@ -39,9 +40,9 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   buttonText: {
-    color: colors.background,
+    color: colors.text,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
     textAlign: 'center',
   },
   buttonTextDisabled: {

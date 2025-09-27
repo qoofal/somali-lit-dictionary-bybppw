@@ -6,7 +6,11 @@ export interface DictionaryEntry {
   literaryContext?: string;
   examples?: string[];
   synonyms?: string[];
-  category?: 'noun' | 'verb' | 'adjective' | 'adverb' | 'literary_term' | 'other';
+  category?: 'gabay' | 'hees' | 'noun' | 'verb' | 'adjective' | 'adverb' | 'literary_term' | 'other';
+  // New fields for poem sub-categories
+  poetName?: string;           // magaca gabyaaga
+  poemHistory?: string;        // taariikhda gabayga
+  poemText?: string;          // gabayga
   dateAdded: Date;
   addedBy?: string;
 }
@@ -17,5 +21,9 @@ export interface NewDictionaryEntry {
   literaryContext?: string;
   examples?: string[];
   synonyms?: string[];
-  category?: 'noun' | 'verb' | 'adjective' | 'adverb' | 'literary_term' | 'other';
+  category?: 'gabay' | 'hees' | 'noun' | 'verb' | 'adjective' | 'adverb' | 'literary_term' | 'other';
+  // New fields for poem sub-categories
+  poetName?: string;           // magaca gabyaaga
+  poemHistory?: string;        // taariikhda gabayga
+  poemText?: string;          // gabayga
 }

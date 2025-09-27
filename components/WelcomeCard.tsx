@@ -57,8 +57,8 @@ const WelcomeCard: React.FC<WelcomeCardProps> = ({ onDismiss }) => {
 const styles = StyleSheet.create({
   container: {
     marginBottom: 20,
-    backgroundColor: colors.primary + '08',
-    borderColor: colors.primary + '30',
+    backgroundColor: colors.primary + '15',
+    borderColor: colors.primary + '50',
   },
   header: {
     flexDirection: 'row',
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.primary + '15',
+    backgroundColor: colors.primary + '25',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -85,7 +85,8 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 15,
-    color: colors.textSecondary,
+    fontWeight: '600',
+    color: colors.text,
     lineHeight: 22,
     marginBottom: 16,
   },
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
   featureText: {
     fontSize: 14,
     color: colors.text,
-    fontWeight: '500',
+    fontWeight: '600',
   },
 });
 

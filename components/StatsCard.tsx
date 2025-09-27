@@ -22,6 +22,8 @@ const StatsCard: React.FC<StatsCardProps> = ({ entries }) => {
     return daysDiff <= 7;
   }).length;
 
+  const gabayCount = (categoryCounts.gabay || 0) + (categoryCounts.hees || 0);
+
   const stats = [
     {
       icon: 'library-outline' as const,
@@ -30,9 +32,9 @@ const StatsCard: React.FC<StatsCardProps> = ({ entries }) => {
       color: colors.primary,
     },
     {
-      icon: 'bookmark-outline' as const,
-      label: 'Erayo Suugaan',
-      value: (categoryCounts.literary_term || 0).toString(),
+      icon: 'musical-notes-outline' as const,
+      label: 'Gabay & Hees',
+      value: gabayCount.toString(),
       color: colors.secondary,
     },
     {
@@ -56,7 +58,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ entries }) => {
       <View style={styles.statsGrid}>
         {stats.map((stat, index) => (
           <View key={index} style={styles.statItem}>
-            <View style={[styles.iconContainer, { backgroundColor: stat.color + '15' }]}>
+            <View style={[styles.iconContainer, { backgroundColor: stat.color + '25' }]}>
               <Icon name={stat.icon} size={20} color={stat.color} />
             </View>
             <Text style={styles.statValue}>{stat.value}</Text>
@@ -74,7 +76,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.text,
     marginBottom: 16,
     textAlign: 'center',
@@ -106,6 +108,7 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 12,
+    fontWeight: '600',
     color: colors.textSecondary,
     textAlign: 'center',
   },

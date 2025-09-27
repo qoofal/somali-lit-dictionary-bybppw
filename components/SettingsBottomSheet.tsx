@@ -232,6 +232,7 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 14,
+    fontWeight: '600',
     color: colors.textSecondary,
     marginTop: 4,
   },
@@ -245,13 +246,14 @@ const styles = StyleSheet.create({
   },
   aboutTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.text,
     marginBottom: 12,
   },
   aboutText: {
     fontSize: 15,
-    color: colors.textSecondary,
+    fontWeight: '600',
+    color: colors.text,
     lineHeight: 22,
   },
   optionsContainer: {
@@ -280,7 +282,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.primary + '15',
+    backgroundColor: colors.primary + '25',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -293,7 +295,7 @@ const styles = StyleSheet.create({
   },
   optionTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.text,
     marginBottom: 2,
   },
@@ -302,6 +304,7 @@ const styles = StyleSheet.create({
   },
   optionDescription: {
     fontSize: 14,
+    fontWeight: '600',
     color: colors.textSecondary,
   },
   loadingContainer: {
@@ -310,6 +313,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 16,
+    fontWeight: '600',
     color: colors.textSecondary,
   },
 });

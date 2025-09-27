@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
   },
   suggestionText: {
     fontSize: 14,
+    fontWeight: '600',
     color: colors.text,
     marginLeft: 6,
   },

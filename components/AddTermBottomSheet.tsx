@@ -23,9 +23,16 @@ const AddTermBottomSheet: React.FC<AddTermBottomSheetProps> = ({
   const [literaryContext, setLiteraryContext] = useState('');
   const [examples, setExamples] = useState('');
   const [synonyms, setSynonyms] = useState('');
-  const [category, setCategory] = useState<NewDictionaryEntry['category']>('literary_term');
+  const [category, setCategory] = useState<NewDictionaryEntry['category']>('gabay');
+  
+  // New poem fields
+  const [poetName, setPoetName] = useState('');
+  const [poemHistory, setPoemHistory] = useState('');
+  const [poemText, setPoemText] = useState('');
 
   const categories = [
+    { value: 'gabay', label: 'Gabay' },
+    { value: 'hees', label: 'Hees' },
     { value: 'literary_term', label: 'Eray Suugaan' },
     { value: 'noun', label: 'Magac' },
     { value: 'verb', label: 'Fal' },
@@ -40,7 +47,10 @@ const AddTermBottomSheet: React.FC<AddTermBottomSheetProps> = ({
     setLiteraryContext('');
     setExamples('');
     setSynonyms('');
-    setCategory('literary_term');
+    setCategory('gabay');
+    setPoetName('');
+    setPoemHistory('');
+    setPoemText('');
   };
 
   const handleSubmit = () => {
@@ -56,6 +66,9 @@ const AddTermBottomSheet: React.FC<AddTermBottomSheetProps> = ({
       examples: examples.trim() ? examples.split('\n').map(ex => ex.trim()).filter(ex => ex) : undefined,
       synonyms: synonyms.trim() ? synonyms.split(',').map(syn => syn.trim()).filter(syn => syn) : undefined,
       category,
+      poetName: poetName.trim() || undefined,
+      poemHistory: poemHistory.trim() || undefined,
+      poemText: poemText.trim() || undefined,
     };
 
     onAddTerm(newTerm);
@@ -67,6 +80,8 @@ const AddTermBottomSheet: React.FC<AddTermBottomSheetProps> = ({
     resetForm();
     onClose();
   };
+
+  const isPoemCategory = category === 'gabay' || category === 'hees';
 
   return (
     <SimpleBottomSheet isVisible={isVisible} onClose={handleClose}>
@@ -130,6 +145,56 @@ const AddTermBottomSheet: React.FC<AddTermBottomSheetProps> = ({
           </ScrollView>
         </View>
 
+        {/* Poem Sub-categories (only show for gabay and hees) */}
+        {isPoemCategory && (
+          <View style={styles.poemSection}>
+            <Text style={styles.sectionTitle}>Faahfaahin Gabayga</Text>
+            
+            {/* Poet's Name */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Magaca Gabyaaga</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Gali magaca gabyaaga..."
+                placeholderTextColor={colors.textSecondary}
+                value={poetName}
+                onChangeText={setPoetName}
+                autoCapitalize="words"
+              />
+            </View>
+
+            {/* Poem History */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Taariikhda Gabayga</Text>
+              <TextInput
+                style={[styles.input, styles.textArea]}
+                placeholder="Sharax taariikhda iyo aasaaska gabaygan..."
+                placeholderTextColor={colors.textSecondary}
+                value={poemHistory}
+                onChangeText={setPoemHistory}
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
+              />
+            </View>
+
+            {/* Poem Text */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Gabayga</Text>
+              <TextInput
+                style={[styles.input, styles.textArea, styles.poemTextInput]}
+                placeholder="Qor gabayga ama qayb ka mid ah..."
+                placeholderTextColor={colors.textSecondary}
+                value={poemText}
+                onChangeText={setPoemText}
+                multiline
+                numberOfLines={6}
+                textAlignVertical="top"
+              />
+            </View>
+          </View>
+        )}
+
         {/* Literary Context Input */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Macnaha Suugaanta</Text>
@@ -180,7 +245,7 @@ const AddTermBottomSheet: React.FC<AddTermBottomSheetProps> = ({
             text="Ku dar Ereyga"
             onPress={handleSubmit}
             style={[styles.submitButton, { backgroundColor: colors.primary }]}
-            textStyle={{ color: colors.background }}
+            textStyle={{ color: colors.text, fontWeight: '700' }}
           />
         </View>
 
@@ -211,12 +276,13 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.text,
     marginBottom: 8,
   },
   helperText: {
     fontSize: 14,
+    fontWeight: '500',
     color: colors.textSecondary,
     marginBottom: 8,
   },
@@ -227,12 +293,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
+    fontWeight: '600',
     color: colors.text,
-    backgroundColor: colors.background,
+    backgroundColor: colors.backgroundAlt,
   },
   textArea: {
     minHeight: 100,
     paddingTop: 12,
+  },
+  poemTextInput: {
+    minHeight: 150,
+    fontStyle: 'italic',
+  },
+  poemSection: {
+    backgroundColor: colors.background,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: colors.primary,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.primary,
+    marginBottom: 16,
+    textAlign: 'center',
   },
   categoryContainer: {
     flexDirection: 'row',
@@ -243,7 +329,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: colors.border,
-    backgroundColor: colors.background,
+    backgroundColor: colors.backgroundAlt,
     marginRight: 8,
   },
   categoryButtonActive: {
@@ -253,11 +339,11 @@ const styles = StyleSheet.create({
   categoryButtonText: {
     fontSize: 14,
     color: colors.text,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   categoryButtonTextActive: {
-    color: colors.background,
-    fontWeight: '600',
+    color: colors.text,
+    fontWeight: '700',
   },
   buttonContainer: {
     marginTop: 24,

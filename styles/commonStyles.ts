@@ -2,19 +2,19 @@
 import { StyleSheet, ViewStyle, TextStyle } from 'react-native';
 
 export const colors = {
-  primary: '#87CEEB',    // Sky blue as primary color
-  secondary: '#4FC3F7',  // Lighter sky blue for accents
-  accent: '#29B6F6',     // Darker sky blue for emphasis
-  background: '#FFFFFF', // White background for light theme
-  backgroundAlt: '#F0F8FF', // Alice blue background
-  text: '#212121',       // Dark text for readability
-  textSecondary: '#757575', // Secondary text color
-  grey: '#E0E0E0',       // Light grey
-  card: '#FFFFFF',       // White card background
-  border: '#B3E5FC',     // Light sky blue border
-  success: '#4CAF50',    // Success green
-  warning: '#FF9800',    // Warning orange
-  error: '#F44336',      // Error red
+  primary: '#1E3A8A',       // Navy blue as primary color
+  secondary: '#3B82F6',     // Lighter blue for accents
+  accent: '#60A5FA',        // Even lighter blue for emphasis
+  background: '#0F172A',    // Dark navy background
+  backgroundAlt: '#1E293B', // Slightly lighter navy background
+  text: '#FFFFFF',          // Bold white text
+  textSecondary: '#CBD5E1', // Light grey text for secondary content
+  grey: '#475569',          // Medium grey
+  card: '#1E293B',          // Dark card background
+  border: '#334155',        // Dark border color
+  success: '#10B981',       // Success green
+  warning: '#F59E0B',       // Warning orange
+  error: '#EF4444',         // Error red
 };
 
 export const buttonStyles = StyleSheet.create({
@@ -75,7 +75,7 @@ export const commonStyles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    fontWeight: '400',
+    fontWeight: '600',
     color: colors.text,
     marginBottom: 8,
     lineHeight: 24,
@@ -103,7 +103,7 @@ export const commonStyles = StyleSheet.create({
     padding: 16,
     marginVertical: 8,
     width: '100%',
-    boxShadow: '0px 2px 8px rgba(135, 206, 235, 0.2)',
+    boxShadow: '0px 2px 8px rgba(30, 58, 138, 0.3)',
     elevation: 3,
   },
   searchContainer: {

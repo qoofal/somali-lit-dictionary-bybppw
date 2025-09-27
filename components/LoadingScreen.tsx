@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: colors.primary + '15',
+    backgroundColor: colors.primary + '25',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 32,
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.primary,
     textAlign: 'center',
     marginBottom: 48,
@@ -71,7 +71,8 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 16,
-    color: colors.textSecondary,
+    fontWeight: '600',
+    color: colors.text,
     textAlign: 'center',
   },
 });
