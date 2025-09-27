@@ -15,6 +15,7 @@ interface SettingsBottomSheetProps {
   onLogout?: () => void;
   entriesCount: number;
   currentUser?: { username: string; role: string } | null;
+  isAdmin?: boolean;
 }
 
 const styles = StyleSheet.create({
@@ -103,6 +104,12 @@ const styles = StyleSheet.create({
   logoutTitle: {
     color: '#92400E',
   },
+  adminItem: {
+    backgroundColor: '#EBF8FF',
+  },
+  adminTitle: {
+    color: '#2563EB',
+  },
   statsContainer: {
     backgroundColor: colors.backgroundAlt,
     padding: 16,
@@ -125,7 +132,8 @@ export default function SettingsBottomSheet({
   onClear, 
   onLogout,
   entriesCount,
-  currentUser 
+  currentUser,
+  isAdmin = false
 }: SettingsBottomSheetProps) {
   const [isExporting, setIsExporting] = useState(false);
 
@@ -196,6 +204,26 @@ export default function SettingsBottomSheet({
     );
   };
 
+  const handleAppSettings = () => {
+    Alert.alert(
+      'Dejinta App-ka',
+      'Halkan waxaad ka beddeli kartaa dejinta guud ee app-ka',
+      [
+        { text: 'OK' }
+      ]
+    );
+  };
+
+  const handleThemeSettings = () => {
+    Alert.alert(
+      'Dejinta Theme-ka',
+      'Waxaa dhawaan iman doona theme-yo kala duwan',
+      [
+        { text: 'OK' }
+      ]
+    );
+  };
+
   return (
     <SimpleBottomSheet isVisible={isVisible} onClose={onClose}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -229,6 +257,47 @@ export default function SettingsBottomSheet({
           </View>
         </View>
 
+        {/* Admin Settings */}
+        {isAdmin && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Dejinta Admin</Text>
+            
+            <TouchableOpacity style={[styles.settingItem, styles.adminItem]} onPress={handleAppSettings}>
+              <View style={styles.settingIcon}>
+                <Icon name="settings" size={24} color="#2563EB" />
+              </View>
+              <View style={styles.settingContent}>
+                <Text style={[styles.settingTitle, styles.adminTitle]}>
+                  Dejinta App-ka
+                </Text>
+                <Text style={styles.settingDescription}>
+                  Beddel dejinta guud ee app-ka
+                </Text>
+              </View>
+              <View style={styles.settingArrow}>
+                <Icon name="chevron-forward" size={20} color="#2563EB" />
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.settingItem, styles.adminItem]} onPress={handleThemeSettings}>
+              <View style={styles.settingIcon}>
+                <Icon name="color-palette" size={24} color="#2563EB" />
+              </View>
+              <View style={styles.settingContent}>
+                <Text style={[styles.settingTitle, styles.adminTitle]}>
+                  Dejinta Theme-ka
+                </Text>
+                <Text style={styles.settingDescription}>
+                  Dooro theme-ka app-ka
+                </Text>
+              </View>
+              <View style={styles.settingArrow}>
+                <Icon name="chevron-forward" size={20} color="#2563EB" />
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
+
         {/* Data Management */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Maaraynta Xogta</Text>
@@ -250,25 +319,27 @@ export default function SettingsBottomSheet({
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={[styles.settingItem, styles.dangerItem]} 
-            onPress={handleClear}
-          >
-            <View style={styles.settingIcon}>
-              <Icon name="trash" size={24} color="#DC2626" />
-            </View>
-            <View style={styles.settingContent}>
-              <Text style={[styles.settingTitle, styles.dangerTitle]}>
-                Nadiifi Qaamuuska
-              </Text>
-              <Text style={styles.settingDescription}>
-                Tirtir dhammaan ereyada qaamuuska
-              </Text>
-            </View>
-            <View style={styles.settingArrow}>
-              <Icon name="chevron-forward" size={20} color="#DC2626" />
-            </View>
-          </TouchableOpacity>
+          {isAdmin && (
+            <TouchableOpacity 
+              style={[styles.settingItem, styles.dangerItem]} 
+              onPress={handleClear}
+            >
+              <View style={styles.settingIcon}>
+                <Icon name="trash" size={24} color="#DC2626" />
+              </View>
+              <View style={styles.settingContent}>
+                <Text style={[styles.settingTitle, styles.dangerTitle]}>
+                  Nadiifi Qaamuuska
+                </Text>
+                <Text style={styles.settingDescription}>
+                  Tirtir dhammaan ereyada qaamuuska
+                </Text>
+              </View>
+              <View style={styles.settingArrow}>
+                <Icon name="chevron-forward" size={20} color="#DC2626" />
+              </View>
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Account */}

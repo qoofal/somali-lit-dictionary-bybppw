@@ -10,7 +10,7 @@ interface IconProps {
   color?: string;
 }
 
-export default function Icon({ name, size = 40, style, color = colors.text }: IconProps) {
+export default function Icon({ name, size = 40, style, color = 'white' }: IconProps) {
   return (
     <View style={[styles.iconContainer, style]}>
       <Ionicons name={name} size={size} color={color} />

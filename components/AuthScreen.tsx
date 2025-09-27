@@ -113,7 +113,7 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
   
-  // Login form state
+  // Login form state - simplified to only email and password
   const [loginData, setLoginData] = useState<LoginCredentials>({
     username: '',
     password: ''
@@ -183,31 +183,32 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
   const renderLoginForm = () => (
     <View style={styles.form}>
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Magaca Isticmaalaha</Text>
+        <Text style={styles.label}>email</Text>
         <TextInput
           style={[
             styles.input,
-            focusedInput === 'username' && styles.inputFocused
+            focusedInput === 'email' && styles.inputFocused
           ]}
-          placeholder="Gali magacaaga isticmaalaha"
+          placeholder="Gali email-kaaga"
           placeholderTextColor={colors.textSecondary}
           value={loginData.username}
           onChangeText={(text) => setLoginData({ ...loginData, username: text })}
-          onFocus={() => setFocusedInput('username')}
+          onFocus={() => setFocusedInput('email')}
           onBlur={() => setFocusedInput(null)}
+          keyboardType="email-address"
           autoCapitalize="none"
           autoCorrect={false}
         />
       </View>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Furaha Sirta ah</Text>
+        <Text style={styles.label}>lambarka sirta ah</Text>
         <TextInput
           style={[
             styles.input,
             focusedInput === 'password' && styles.inputFocused
           ]}
-          placeholder="Gali furaha sirta ah"
+          placeholder="Gali lambarka sirta ah"
           placeholderTextColor={colors.textSecondary}
           value={loginData.password}
           onChangeText={(text) => setLoginData({ ...loginData, password: text })}
@@ -322,7 +323,7 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
       >
         <View style={styles.header}>
           <View style={styles.logo}>
-            <Icon name="book" size={40} color={colors.text} />
+            <Icon name="book" size={40} color="white" />
           </View>
           <Text style={styles.title}>Qaamuuska Suugaanta</Text>
           <Text style={styles.subtitle}>
@@ -347,8 +348,8 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
           <View style={styles.adminNote}>
             <Text style={styles.adminNoteText}>
               <Text style={{ fontWeight: '600' }}>Xusuusin:</Text> Admin-ka default-ka ah:{'\n'}
-              Magaca isticmaalaha: admin{'\n'}
-              Furaha sirta ah: admin123
+              Email: admin@admin.com{'\n'}
+              Lambarka sirta ah: admin123
             </Text>
           </View>
         )}

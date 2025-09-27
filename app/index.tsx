@@ -14,6 +14,7 @@ import SearchSuggestions from '../components/SearchSuggestions';
 import WelcomeCard from '../components/WelcomeCard';
 import CategoryFilter from '../components/CategoryFilter';
 import AuthScreen from '../components/AuthScreen';
+import CategoryManagement from '../components/CategoryManagement';
 import { DictionaryEntry } from '../types/dictionary';
 import { useDictionary } from '../hooks/useDictionary';
 import { useAuth } from '../hooks/useAuth';
@@ -24,6 +25,7 @@ export default function MainScreen() {
   const [isAddTermVisible, setIsAddTermVisible] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [isAdminPanelVisible, setIsAdminPanelVisible] = useState(false);
+  const [isCategoryManagementVisible, setIsCategoryManagementVisible] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'home' | 'search' | 'add'>('home');
@@ -293,9 +295,14 @@ export default function MainScreen() {
             </TouchableOpacity>
           )}
           {isAdmin() && (
-            <TouchableOpacity onPress={() => setIsAdminPanelVisible(true)}>
-              <Icon name="shield-checkmark" size={24} color={colors.primary} />
-            </TouchableOpacity>
+            <>
+              <TouchableOpacity onPress={() => setIsCategoryManagementVisible(true)}>
+                <Icon name="list" size={24} color={colors.primary} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setIsAdminPanelVisible(true)}>
+                <Icon name="shield-checkmark" size={24} color={colors.primary} />
+              </TouchableOpacity>
+            </>
           )}
           <TouchableOpacity onPress={() => setIsSettingsVisible(true)}>
             <Icon name="settings-outline" size={24} color={colors.text} />
@@ -320,10 +327,10 @@ export default function MainScreen() {
           <Icon 
             name="home" 
             size={24} 
-            color={activeTab === 'home' ? colors.primary : colors.text} 
+            color={activeTab === 'home' ? colors.primary : 'white'} 
           />
           <Text style={activeTab === 'home' ? commonStyles.tabTextActive : commonStyles.tabText}>
-            Guriga
+            Ardaaga
           </Text>
         </TouchableOpacity>
 
@@ -334,7 +341,7 @@ export default function MainScreen() {
           <Icon 
             name="search" 
             size={24} 
-            color={activeTab === 'search' ? colors.primary : colors.text} 
+            color={activeTab === 'search' ? colors.primary : 'white'} 
           />
           <Text style={activeTab === 'search' ? commonStyles.tabTextActive : commonStyles.tabText}>
             Raadi
@@ -348,7 +355,7 @@ export default function MainScreen() {
           <Icon 
             name="add-circle" 
             size={24} 
-            color={activeTab === 'add' ? colors.primary : colors.text} 
+            color={activeTab === 'add' ? colors.primary : 'white'} 
           />
           <Text style={activeTab === 'add' ? commonStyles.tabTextActive : commonStyles.tabText}>
             Ku dar
@@ -378,7 +385,17 @@ export default function MainScreen() {
         onLogout={logout}
         entriesCount={entries.length}
         currentUser={user ? { username: user.username, role: user.role } : null}
+        isAdmin={isAdmin()}
       />
+
+      {/* Category Management Bottom Sheet */}
+      {isAdmin() && (
+        <CategoryManagement
+          isVisible={isCategoryManagementVisible}
+          onClose={() => setIsCategoryManagementVisible(false)}
+          entries={entries}
+        />
+      )}
 
       {/* Admin Panel */}
       {isAdmin() && (

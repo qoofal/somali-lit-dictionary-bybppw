@@ -9,7 +9,7 @@ const CURRENT_USER_KEY = 'somali_dictionary_current_user';
 const DEFAULT_ADMIN: User = {
   id: 'admin_001',
   username: 'admin',
-  email: 'admin@qaamuus.so',
+  email: 'admin@admin.com',
   role: 'admin',
   dateCreated: new Date('2024-01-01'),
   lastLogin: new Date()
@@ -36,7 +36,7 @@ export const authService = {
           password: hashPassword('admin123') // Default admin password
         };
         await AsyncStorage.setItem(USERS_STORAGE_KEY, JSON.stringify([adminWithPassword]));
-        console.log('Default admin user created with username: admin, password: admin123');
+        console.log('Default admin user created with email: admin@admin.com, password: admin123');
       }
     } catch (error) {
       console.error('Error initializing auth:', error);
@@ -102,14 +102,17 @@ export const authService = {
   async login(credentials: LoginCredentials): Promise<{ success: boolean; message: string; user?: User }> {
     try {
       const users = await this.loadUsers();
-      const userWithPassword = users.find(u => u.username === credentials.username);
+      // Support both email and username login
+      const userWithPassword = users.find(u => 
+        u.username === credentials.username || u.email === credentials.username
+      );
 
       if (!userWithPassword) {
-        return { success: false, message: 'Magaca isticmaalaha ama furaha sirta ah waa khalad' };
+        return { success: false, message: 'Email-ka ama lambarka sirta ah waa khalad' };
       }
 
       if (!verifyPassword(credentials.password, userWithPassword.password)) {
-        return { success: false, message: 'Magaca isticmaalaha ama furaha sirta ah waa khalad' };
+        return { success: false, message: 'Email-ka ama lambarka sirta ah waa khalad' };
       }
 
       // Update last login
