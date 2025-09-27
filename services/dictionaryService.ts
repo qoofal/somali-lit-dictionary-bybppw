@@ -9,9 +9,10 @@ export const dictionaryService = {
     try {
       const jsonValue = JSON.stringify(entries);
       await AsyncStorage.setItem(STORAGE_KEY, jsonValue);
-      console.log('Dictionary entries saved successfully');
+      console.log('Dictionary entries saved successfully:', entries.length, 'entries');
     } catch (error) {
       console.error('Error saving dictionary entries:', error);
+      throw error;
     }
   },
 
@@ -21,11 +22,14 @@ export const dictionaryService = {
       if (jsonValue != null) {
         const entries = JSON.parse(jsonValue);
         // Convert date strings back to Date objects
-        return entries.map((entry: any) => ({
+        const processedEntries = entries.map((entry: any) => ({
           ...entry,
           dateAdded: new Date(entry.dateAdded)
         }));
+        console.log('Dictionary entries loaded successfully:', processedEntries.length, 'entries');
+        return processedEntries;
       }
+      console.log('No dictionary entries found in storage');
       return [];
     } catch (error) {
       console.error('Error loading dictionary entries:', error);
@@ -67,13 +71,16 @@ export const dictionaryService = {
       console.log('Dictionary entries cleared successfully');
     } catch (error) {
       console.error('Error clearing dictionary entries:', error);
+      throw error;
     }
   },
 
   async exportEntries(): Promise<string> {
     try {
       const entries = await this.loadEntries();
-      return JSON.stringify(entries, null, 2);
+      const exportData = JSON.stringify(entries, null, 2);
+      console.log('Dictionary entries exported successfully');
+      return exportData;
     } catch (error) {
       console.error('Error exporting dictionary entries:', error);
       return '[]';
@@ -84,10 +91,26 @@ export const dictionaryService = {
     try {
       const entries = JSON.parse(jsonData);
       if (Array.isArray(entries)) {
-        await this.saveEntries(entries);
-        return true;
+        // Validate entries structure
+        const validEntries = entries.filter(entry => 
+          entry && 
+          typeof entry.id === 'string' && 
+          typeof entry.word === 'string' && 
+          typeof entry.definition === 'string'
+        );
+        
+        if (validEntries.length > 0) {
+          await this.saveEntries(validEntries);
+          console.log('Dictionary entries imported successfully:', validEntries.length, 'entries');
+          return true;
+        } else {
+          console.error('No valid entries found in import data');
+          return false;
+        }
+      } else {
+        console.error('Import data is not an array');
+        return false;
       }
-      return false;
     } catch (error) {
       console.error('Error importing dictionary entries:', error);
       return false;

@@ -12,7 +12,10 @@ const initialEntries: DictionaryEntry[] = [
     literaryContext: 'Gabaygu waa mid ka mid ah noocyada suugaanta ee ugu muhiimsan dhaqanka Soomaaliyeed.',
     examples: ['Gabayga Sayid Maxamed Cabdulle Xasan', 'Gabayada Ismaaciil Mire'],
     synonyms: ['Maanso', 'Hees dheer'],
-    category: 'literary_term',
+    category: 'gabay',
+    poetName: 'Sayid Maxamed Cabdulle Xasan',
+    poemHistory: 'Gabaygan wuxuu ku saabsan yahay dagaalkii Dervishka',
+    poemText: 'Tii hore way iga tagtay...',
     dateAdded: new Date('2024-01-01'),
     addedBy: 'System'
   },
@@ -23,7 +26,10 @@ const initialEntries: DictionaryEntry[] = [
     literaryContext: 'Heesaha waxay door muhiim ah ka ciyaaraan dhaqanka iyo suugaanta Soomaaliyeed.',
     examples: ['Heesaha Magool', 'Heesaha Khadra Daahir'],
     synonyms: ['Luuq', 'Gabay gaaban'],
-    category: 'literary_term',
+    category: 'hees',
+    poetName: 'Magool',
+    poemHistory: 'Heesan waxay ku saabsan tahay jacaylka',
+    poemText: 'Jacayl baan qabaa...',
     dateAdded: new Date('2024-01-02'),
     addedBy: 'System'
   },
@@ -67,7 +73,10 @@ const initialEntries: DictionaryEntry[] = [
     literaryContext: 'Buraanburku waa mid ka mid ah noocyada suugaanta ee gaar u ah haweenka Soomaaliyeed.',
     examples: ['Buraanbur Barni', 'Buraanbur Hibo'],
     synonyms: ['Hees haween', 'Maanso haween'],
-    category: 'literary_term',
+    category: 'hees',
+    poetName: 'Barni',
+    poemHistory: 'Buraanburkan wuxuu ku saabsan yahay guusha dagaal',
+    poemText: 'Raggii geesiga ahaa...',
     dateAdded: new Date('2024-01-06'),
     addedBy: 'System'
   },
@@ -78,7 +87,10 @@ const initialEntries: DictionaryEntry[] = [
     literaryContext: 'Geeraarka waxaa loo isticmaali jiray xilliyadii dagaalka si loo dhiirrigaliyo ciidamada.',
     examples: ['Geeraar Sayid', 'Geeraar Dervish'],
     synonyms: ['Hees dagaal', 'Dhiirrigelin'],
-    category: 'literary_term',
+    category: 'gabay',
+    poetName: 'Sayid Maxamed Cabdulle Xasan',
+    poemHistory: 'Geeraarkan wuxuu ku saabsan yahay dagaalkii xoreynta',
+    poemText: 'Geesi baan ahay...',
     dateAdded: new Date('2024-01-07'),
     addedBy: 'System'
   },
@@ -89,29 +101,38 @@ const initialEntries: DictionaryEntry[] = [
     literaryContext: 'Jiiftadu waa mid ka mid ah noocyada suugaanta ee gaagaaban.',
     examples: ['Jiifto jacayl', 'Jiifto calool xanuun'],
     synonyms: ['Hees gaaban', 'Luuq gaaban'],
-    category: 'literary_term',
+    category: 'hees',
+    poetName: 'Khadra Daahir',
+    poemHistory: 'Jiiftadan waxay ku saabsan tahay jacaylka lumay',
+    poemText: 'Jacaylkii baan waayay...',
     dateAdded: new Date('2024-01-08'),
     addedBy: 'System'
   }
 ];
 
 export const useDictionary = () => {
-  const [entries, setEntries] = useState<DictionaryEntry[]>(initialEntries);
+  const [entries, setEntries] = useState<DictionaryEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load entries from storage on mount
   useEffect(() => {
     const loadStoredEntries = async () => {
       try {
+        console.log('Loading dictionary entries...');
         const storedEntries = await dictionaryService.loadEntries();
         if (storedEntries.length > 0) {
+          console.log('Loaded', storedEntries.length, 'entries from storage');
           setEntries(storedEntries);
         } else {
+          console.log('No stored entries found, using initial entries');
           // If no stored entries, save initial entries
           await dictionaryService.saveEntries(initialEntries);
+          setEntries(initialEntries);
         }
       } catch (error) {
         console.error('Error loading dictionary entries:', error);
+        // Fallback to initial entries if loading fails
+        setEntries(initialEntries);
       } finally {
         setIsLoading(false);
       }
@@ -120,10 +141,13 @@ export const useDictionary = () => {
     loadStoredEntries();
   }, []);
 
-  // Save entries whenever they change
+  // Save entries whenever they change (but not during initial load)
   useEffect(() => {
     if (!isLoading && entries.length > 0) {
-      dictionaryService.saveEntries(entries);
+      console.log('Saving', entries.length, 'entries to storage');
+      dictionaryService.saveEntries(entries).catch(error => {
+        console.error('Error saving entries:', error);
+      });
     }
   }, [entries, isLoading]);
 
@@ -136,16 +160,19 @@ export const useDictionary = () => {
     };
     
     setEntries(prevEntries => [entry, ...prevEntries]);
-    console.log('Added new dictionary entry:', entry);
+    console.log('Added new dictionary entry:', entry.word);
   };
 
   const deleteEntry = async (entryId: string): Promise<boolean> => {
     try {
+      console.log('Deleting entry:', entryId);
       const success = await dictionaryService.deleteEntry(entryId);
       if (success) {
         setEntries(prevEntries => prevEntries.filter(entry => entry.id !== entryId));
+        console.log('Entry deleted successfully');
         return true;
       }
+      console.error('Failed to delete entry from storage');
       return false;
     } catch (error) {
       console.error('Error deleting entry:', error);
@@ -161,6 +188,8 @@ export const useDictionary = () => {
       entry.word.toLowerCase().includes(lowercaseQuery) ||
       entry.definition.toLowerCase().includes(lowercaseQuery) ||
       entry.literaryContext?.toLowerCase().includes(lowercaseQuery) ||
+      entry.poetName?.toLowerCase().includes(lowercaseQuery) ||
+      entry.poemHistory?.toLowerCase().includes(lowercaseQuery) ||
       entry.examples?.some(example => example.toLowerCase().includes(lowercaseQuery)) ||
       entry.synonyms?.some(synonym => synonym.toLowerCase().includes(lowercaseQuery))
     );
@@ -177,6 +206,7 @@ export const useDictionary = () => {
 
   const clearAllEntries = async () => {
     try {
+      console.log('Clearing all entries and resetting to initial data');
       await dictionaryService.clearEntries();
       setEntries(initialEntries);
       await dictionaryService.saveEntries(initialEntries);
@@ -187,16 +217,29 @@ export const useDictionary = () => {
   };
 
   const exportDictionary = async (): Promise<string> => {
-    return await dictionaryService.exportEntries();
+    try {
+      console.log('Exporting dictionary');
+      return await dictionaryService.exportEntries();
+    } catch (error) {
+      console.error('Error exporting dictionary:', error);
+      return JSON.stringify(entries, null, 2);
+    }
   };
 
   const importDictionary = async (jsonData: string): Promise<boolean> => {
-    const success = await dictionaryService.importEntries(jsonData);
-    if (success) {
-      const importedEntries = await dictionaryService.loadEntries();
-      setEntries(importedEntries);
+    try {
+      console.log('Importing dictionary');
+      const success = await dictionaryService.importEntries(jsonData);
+      if (success) {
+        const importedEntries = await dictionaryService.loadEntries();
+        setEntries(importedEntries);
+        console.log('Dictionary imported successfully');
+      }
+      return success;
+    } catch (error) {
+      console.error('Error importing dictionary:', error);
+      return false;
     }
-    return success;
   };
 
   return {

@@ -1,9 +1,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
-import { SafeAreaProvider, useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Stack, useGlobalSearchParams } from 'expo-router';
+import { Stack } from 'expo-router';
 import { setupErrorLogging } from '../utils/errorLogger';
 import * as Font from 'expo-font';
 import {
@@ -16,14 +16,15 @@ import {
   Inter_600SemiBold,
   Inter_700Bold,
 } from '@expo-google-fonts/inter';
-
-const STORAGE_KEY = 'natively_emulate_safe_area';
+import {
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_600SemiBold,
+  Poppins_700Bold,
+} from '@expo-google-fonts/poppins';
 
 export default function RootLayout() {
-  const insets = useSafeAreaInsets();
-  const [emulate, setEmulate] = useState(false);
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const params = useGlobalSearchParams();
 
   useEffect(() => {
     setupErrorLogging();
@@ -32,6 +33,7 @@ export default function RootLayout() {
 
   const loadFonts = async () => {
     try {
+      console.log('Loading fonts...');
       await Font.loadAsync({
         PlayfairDisplay_400Regular,
         PlayfairDisplay_700Bold,
@@ -39,17 +41,22 @@ export default function RootLayout() {
         Inter_500Medium,
         Inter_600SemiBold,
         Inter_700Bold,
+        Poppins_400Regular,
+        Poppins_500Medium,
+        Poppins_600SemiBold,
+        Poppins_700Bold,
       });
-      setFontsLoaded(true);
       console.log('Fonts loaded successfully');
+      setFontsLoaded(true);
     } catch (error) {
       console.error('Error loading fonts:', error);
-      setFontsLoaded(true); // Continue without fonts if loading fails
+      // Continue without custom fonts if loading fails
+      setFontsLoaded(true);
     }
   };
 
   if (!fontsLoaded) {
-    return null; // Or a loading screen
+    return null;
   }
 
   return (
