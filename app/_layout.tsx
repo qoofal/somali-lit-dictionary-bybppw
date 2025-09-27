@@ -27,13 +27,14 @@ export default function RootLayout() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
+    console.log('RootLayout: Setting up error logging...');
     setupErrorLogging();
     loadFonts();
   }, []);
 
   const loadFonts = async () => {
     try {
-      console.log('Loading fonts...');
+      console.log('RootLayout: Loading fonts...');
       await Font.loadAsync({
         PlayfairDisplay_400Regular,
         PlayfairDisplay_700Bold,
@@ -46,18 +47,23 @@ export default function RootLayout() {
         Poppins_600SemiBold,
         Poppins_700Bold,
       });
-      console.log('Fonts loaded successfully');
+      console.log('RootLayout: Fonts loaded successfully');
       setFontsLoaded(true);
     } catch (error) {
-      console.error('Error loading fonts:', error);
+      console.error('RootLayout: Error loading fonts:', error);
       // Continue without custom fonts if loading fails
+      console.log('RootLayout: Continuing without custom fonts');
       setFontsLoaded(true);
     }
   };
 
+  // Don't render anything until fonts are loaded (or failed to load)
   if (!fontsLoaded) {
+    console.log('RootLayout: Waiting for fonts to load...');
     return null;
   }
+
+  console.log('RootLayout: Rendering app with fonts loaded');
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

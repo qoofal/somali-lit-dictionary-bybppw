@@ -72,6 +72,7 @@ export default function MainScreen() {
     : [];
 
   const handleDeleteEntry = async (entryId: string) => {
+    console.log('Attempting to delete entry:', entryId);
     const success = await deleteEntry(entryId);
     if (success) {
       console.log('Entry deleted successfully');
@@ -89,19 +90,21 @@ export default function MainScreen() {
         </Text>
 
         {/* User Welcome */}
-        <View style={[commonStyles.card, { marginBottom: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}>
-          <View>
-            <Text style={[commonStyles.text, { fontWeight: '600' }]}>
-              Ku soo dhowoow, {user?.username}!
-            </Text>
-            <Text style={commonStyles.textSecondary}>
-              {isAdmin() ? 'Admin' : 'Isticmaale'}
-            </Text>
+        {user && (
+          <View style={[commonStyles.card, { marginBottom: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}>
+            <View>
+              <Text style={[commonStyles.text, { fontWeight: '600' }]}>
+                Ku soo dhowoow, {user.username}!
+              </Text>
+              <Text style={commonStyles.textSecondary}>
+                {isAdmin() ? 'Admin' : 'Isticmaale'}
+              </Text>
+            </View>
+            <TouchableOpacity onPress={logout}>
+              <Icon name="log-out" size={24} color={colors.textSecondary} />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={logout}>
-            <Icon name="log-out" size={24} color={colors.textSecondary} />
-          </TouchableOpacity>
-        </View>
+        )}
 
         {/* Search Bar */}
         <View style={commonStyles.searchContainer}>

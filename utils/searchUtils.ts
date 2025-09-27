@@ -1,4 +1,6 @@
 
+import { DictionaryEntry } from '../types/dictionary';
+
 export const normalizeText = (text: string): string => {
   return text.toLowerCase().trim();
 };
@@ -19,7 +21,7 @@ export const highlightSearchTerm = (text: string, searchTerm: string): string =>
   return `${before}**${match}**${after}`;
 };
 
-export const getSearchSuggestions = (entries: any[], query: string, limit: number = 5): string[] => {
+export const getSearchSuggestions = (entries: DictionaryEntry[], query: string, limit: number = 5): string[] => {
   if (!query.trim()) return [];
   
   const normalizedQuery = normalizeText(query);
@@ -33,9 +35,11 @@ export const getSearchSuggestions = (entries: any[], query: string, limit: numbe
     ];
     
     words.forEach(word => {
-      const normalizedWord = normalizeText(word);
-      if (normalizedWord.includes(normalizedQuery) && normalizedWord !== normalizedQuery) {
-        suggestions.add(word);
+      if (word && typeof word === 'string') {
+        const normalizedWord = normalizeText(word);
+        if (normalizedWord.includes(normalizedQuery) && normalizedWord !== normalizedQuery) {
+          suggestions.add(word);
+        }
       }
     });
   });

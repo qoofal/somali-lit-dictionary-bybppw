@@ -290,7 +290,10 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        contentContainerStyle={styles.content} 
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.header}>
           <View style={styles.logo}>
             <Icon name="book" size={40} color={colors.text} />
