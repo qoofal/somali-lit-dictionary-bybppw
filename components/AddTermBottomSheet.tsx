@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     maxHeight: '100%',
   },
   scrollContent: {
-    paddingBottom: 120, // Increased padding to ensure buttons are visible
+    paddingBottom: 20, // Reduced padding since we're using flex layout
   },
   title: {
     fontSize: 20,
@@ -123,14 +123,11 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingTop: 16,
     paddingBottom: 16,
-    paddingHorizontal: 16,
+    paddingHorizontal: 0, // Remove horizontal padding since parent already has it
     borderTopWidth: 1,
     borderTopColor: colors.border,
     backgroundColor: colors.background,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
+    marginTop: 16,
   },
   adminWarning: {
     backgroundColor: colors.backgroundAlt,
@@ -266,13 +263,13 @@ export default function AddTermBottomSheet({
   return (
     <SimpleBottomSheet isVisible={isVisible} onClose={handleClose}>
       <View style={styles.container}>
+        <Text style={styles.title}>Ku dar Erey Cusub</Text>
+        
         <ScrollView 
           style={{ flex: 1 }} 
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.title}>Ku dar Erey Cusub</Text>
-
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Ereyga *</Text>
             <TextInput
@@ -425,7 +422,7 @@ export default function AddTermBottomSheet({
           </View>
         </ScrollView>
 
-        {/* Fixed button container at the bottom - now positioned absolutely */}
+        {/* Fixed button container at the bottom - now using normal flow instead of absolute positioning */}
         <View style={styles.buttonContainer}>
           <Button
             text="Jooji"
