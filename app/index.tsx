@@ -7,33 +7,48 @@ import Icon from '../components/Icon';
 import DictionaryCard from '../components/DictionaryCard';
 import AddTermBottomSheet from '../components/AddTermBottomSheet';
 import SettingsBottomSheet from '../components/SettingsBottomSheet';
+import AdminPanel from '../components/AdminPanel';
 import LoadingScreen from '../components/LoadingScreen';
 import StatsCard from '../components/StatsCard';
 import SearchSuggestions from '../components/SearchSuggestions';
 import WelcomeCard from '../components/WelcomeCard';
 import CategoryFilter from '../components/CategoryFilter';
+import AuthScreen from '../components/AuthScreen';
 import { DictionaryEntry } from '../types/dictionary';
 import { useDictionary } from '../hooks/useDictionary';
+import { useAuth } from '../hooks/useAuth';
 import { getSearchSuggestions } from '../utils/searchUtils';
 
 export default function MainScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddTermVisible, setIsAddTermVisible] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+  const [isAdminPanelVisible, setIsAdminPanelVisible] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'home' | 'search' | 'add'>('home');
   
   const { 
     entries, 
-    isLoading, 
+    isLoading: isDictionaryLoading, 
     addEntry, 
+    deleteEntry,
     searchEntries, 
     getEntriesByCategory,
     clearAllEntries,
     exportDictionary,
     importDictionary 
   } = useDictionary();
+
+  const {
+    user,
+    isAuthenticated,
+    isLoading: isAuthLoading,
+    login,
+    register,
+    logout,
+    isAdmin
+  } = useAuth();
   
   // Apply search and category filters
   let filteredEntries = searchQuery.length > 0 
@@ -56,6 +71,15 @@ export default function MainScreen() {
     ? getSearchSuggestions(entries, searchQuery, 5)
     : [];
 
+  const handleDeleteEntry = async (entryId: string) => {
+    const success = await deleteEntry(entryId);
+    if (success) {
+      console.log('Entry deleted successfully');
+    } else {
+      console.error('Failed to delete entry');
+    }
+  };
+
   const renderHomeContent = () => (
     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
       <View style={{ paddingTop: 20 }}>
@@ -63,6 +87,21 @@ export default function MainScreen() {
         <Text style={commonStyles.subtitleSecondary}>
           qaamuuska erey-bixin suugaaneedka afka Soomaaliga
         </Text>
+
+        {/* User Welcome */}
+        <View style={[commonStyles.card, { marginBottom: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}>
+          <View>
+            <Text style={[commonStyles.text, { fontWeight: '600' }]}>
+              Ku soo dhowoow, {user?.username}!
+            </Text>
+            <Text style={commonStyles.textSecondary}>
+              {isAdmin() ? 'Admin' : 'Isticmaale'}
+            </Text>
+          </View>
+          <TouchableOpacity onPress={logout}>
+            <Icon name="log-out" size={24} color={colors.textSecondary} />
+          </TouchableOpacity>
+        </View>
 
         {/* Search Bar */}
         <View style={commonStyles.searchContainer}>
@@ -89,7 +128,12 @@ export default function MainScreen() {
         <View style={{ marginBottom: 24 }}>
           <Text style={commonStyles.subtitle}>Erayo Muhiim ah</Text>
           {featuredEntries.map((entry) => (
-            <DictionaryCard key={entry.id} entry={entry} />
+            <DictionaryCard 
+              key={entry.id} 
+              entry={entry} 
+              isAdmin={isAdmin()}
+              onDelete={handleDeleteEntry}
+            />
           ))}
         </View>
       </View>
@@ -136,7 +180,12 @@ export default function MainScreen() {
         )}
 
         {filteredEntries.map((entry) => (
-          <DictionaryCard key={entry.id} entry={entry} />
+          <DictionaryCard 
+            key={entry.id} 
+            entry={entry} 
+            isAdmin={isAdmin()}
+            onDelete={handleDeleteEntry}
+          />
         ))}
 
         {searchQuery.length > 0 && filteredEntries.length === 0 && (
@@ -176,10 +225,13 @@ export default function MainScreen() {
             color: colors.primary,
             fontWeight: '600'
           }]}>
-            Ku dar Erey Cusub
+            {isAdmin() ? 'Ku dar Erey Cusub' : 'Kaliya Admin-ada ayaa ku dari kara'}
           </Text>
           <Text style={[commonStyles.textSecondary, { textAlign: 'center', marginTop: 8 }]}>
-            Gacan ku haye horumarinta qaamuuska
+            {isAdmin() 
+              ? 'Gacan ku haye horumarinta qaamuuska'
+              : 'La xiriir admin-ka si aad u darto erayo cusub'
+            }
           </Text>
         </TouchableOpacity>
 
@@ -187,7 +239,12 @@ export default function MainScreen() {
         <View style={{ marginTop: 24 }}>
           <Text style={commonStyles.subtitle}>Erayo Dhawaan la daray</Text>
           {entries.slice(-5).reverse().map((entry) => (
-            <DictionaryCard key={entry.id} entry={entry} />
+            <DictionaryCard 
+              key={entry.id} 
+              entry={entry} 
+              isAdmin={isAdmin()}
+              onDelete={handleDeleteEntry}
+            />
           ))}
         </View>
       </View>
@@ -207,8 +264,14 @@ export default function MainScreen() {
     }
   };
 
-  if (isLoading) {
-    return <LoadingScreen />;
+  // Show loading screen while auth is initializing
+  if (isAuthLoading || isDictionaryLoading) {
+    return <LoadingScreen message="Diyaarinta qaamuuska..." />;
+  }
+
+  // Show auth screen if user is not authenticated
+  if (!isAuthenticated) {
+    return <AuthScreen onLogin={login} onRegister={register} />;
   }
 
   return (
@@ -224,6 +287,11 @@ export default function MainScreen() {
           {activeTab === 'search' && searchQuery.length > 0 && (
             <TouchableOpacity onPress={() => setSearchQuery('')}>
               <Icon name="close" size={24} color={colors.text} />
+            </TouchableOpacity>
+          )}
+          {isAdmin() && (
+            <TouchableOpacity onPress={() => setIsAdminPanelVisible(true)}>
+              <Icon name="shield-checkmark" size={24} color={colors.primary} />
             </TouchableOpacity>
           )}
           <TouchableOpacity onPress={() => setIsSettingsVisible(true)}>
@@ -290,10 +358,11 @@ export default function MainScreen() {
         isVisible={isAddTermVisible}
         onClose={() => setIsAddTermVisible(false)}
         onAddTerm={(term) => {
-          addEntry(term);
+          addEntry(term, user?.username || 'Unknown');
           setIsAddTermVisible(false);
           console.log('New term added:', term);
         }}
+        isAdmin={isAdmin()}
       />
 
       {/* Settings Bottom Sheet */}
@@ -303,8 +372,20 @@ export default function MainScreen() {
         onExport={exportDictionary}
         onImport={importDictionary}
         onClear={clearAllEntries}
+        onLogout={logout}
         entriesCount={entries.length}
+        currentUser={user ? { username: user.username, role: user.role } : null}
       />
+
+      {/* Admin Panel */}
+      {isAdmin() && (
+        <AdminPanel
+          isVisible={isAdminPanelVisible}
+          onClose={() => setIsAdminPanelVisible(false)}
+          currentUser={user!}
+          entriesCount={entries.length}
+        />
+      )}
     </SafeAreaView>
   );
 }

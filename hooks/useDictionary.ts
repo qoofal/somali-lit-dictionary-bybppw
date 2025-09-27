@@ -127,16 +127,30 @@ export const useDictionary = () => {
     }
   }, [entries, isLoading]);
 
-  const addEntry = (newEntry: NewDictionaryEntry) => {
+  const addEntry = (newEntry: NewDictionaryEntry, addedBy: string = 'User') => {
     const entry: DictionaryEntry = {
       ...newEntry,
       id: Date.now().toString(),
       dateAdded: new Date(),
-      addedBy: 'User'
+      addedBy
     };
     
     setEntries(prevEntries => [entry, ...prevEntries]);
     console.log('Added new dictionary entry:', entry);
+  };
+
+  const deleteEntry = async (entryId: string): Promise<boolean> => {
+    try {
+      const success = await dictionaryService.deleteEntry(entryId);
+      if (success) {
+        setEntries(prevEntries => prevEntries.filter(entry => entry.id !== entryId));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error deleting entry:', error);
+      return false;
+    }
   };
 
   const searchEntries = (query: string): DictionaryEntry[] => {
@@ -189,6 +203,7 @@ export const useDictionary = () => {
     entries,
     isLoading,
     addEntry,
+    deleteEntry,
     searchEntries,
     getEntriesByCategory,
     getRandomEntries,

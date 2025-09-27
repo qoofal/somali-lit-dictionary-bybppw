@@ -33,6 +33,34 @@ export const dictionaryService = {
     }
   },
 
+  async deleteEntry(entryId: string): Promise<boolean> {
+    try {
+      const entries = await this.loadEntries();
+      const filteredEntries = entries.filter(entry => entry.id !== entryId);
+      await this.saveEntries(filteredEntries);
+      console.log('Dictionary entry deleted:', entryId);
+      return true;
+    } catch (error) {
+      console.error('Error deleting dictionary entry:', error);
+      return false;
+    }
+  },
+
+  async updateEntry(entryId: string, updatedEntry: Partial<DictionaryEntry>): Promise<boolean> {
+    try {
+      const entries = await this.loadEntries();
+      const updatedEntries = entries.map(entry => 
+        entry.id === entryId ? { ...entry, ...updatedEntry } : entry
+      );
+      await this.saveEntries(updatedEntries);
+      console.log('Dictionary entry updated:', entryId);
+      return true;
+    } catch (error) {
+      console.error('Error updating dictionary entry:', error);
+      return false;
+    }
+  },
+
   async clearEntries(): Promise<void> {
     try {
       await AsyncStorage.removeItem(STORAGE_KEY);
