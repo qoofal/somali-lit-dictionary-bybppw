@@ -18,6 +18,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  scrollContent: {
+    paddingBottom: 100, // Add extra padding at bottom to ensure buttons are visible
+  },
   title: {
     fontSize: 20,
     fontWeight: '600',
@@ -118,6 +121,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
     marginTop: 24,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    backgroundColor: colors.background,
   },
   adminWarning: {
     backgroundColor: colors.backgroundAlt,
@@ -163,6 +170,7 @@ export default function AddTermBottomSheet({
   const [poemText, setPoemText] = useState('');
 
   const resetForm = () => {
+    console.log('Resetting form');
     setWord('');
     setDefinition('');
     setLiteraryContext('');
@@ -175,6 +183,10 @@ export default function AddTermBottomSheet({
   };
 
   const handleSubmit = () => {
+    console.log('Submit button pressed');
+    console.log('Word:', word.trim());
+    console.log('Definition:', definition.trim());
+    
     if (!word.trim() || !definition.trim()) {
       Alert.alert('Khalad', 'Fadlan buuxi ereyga iyo macnaheeda');
       return;
@@ -204,16 +216,19 @@ export default function AddTermBottomSheet({
   };
 
   const handleClose = () => {
+    console.log('Close button pressed');
     resetForm();
     onClose();
   };
 
   const addExample = () => {
+    console.log('Adding new example');
     setExamples([...examples, '']);
   };
 
   const removeExample = (index: number) => {
     if (examples.length > 1) {
+      console.log('Removing example at index:', index);
       setExamples(examples.filter((_, i) => i !== index));
     }
   };
@@ -225,11 +240,13 @@ export default function AddTermBottomSheet({
   };
 
   const addSynonym = () => {
+    console.log('Adding new synonym');
     setSynonyms([...synonyms, '']);
   };
 
   const removeSynonym = (index: number) => {
     if (synonyms.length > 1) {
+      console.log('Removing synonym at index:', index);
       setSynonyms(synonyms.filter((_, i) => i !== index));
     }
   };
@@ -242,160 +259,167 @@ export default function AddTermBottomSheet({
 
   return (
     <SimpleBottomSheet isVisible={isVisible} onClose={handleClose}>
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>Ku dar Erey Cusub</Text>
+      <View style={styles.container}>
+        <ScrollView 
+          style={{ flex: 1 }} 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <Text style={styles.title}>Ku dar Erey Cusub</Text>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Ereyga *</Text>
-          <TextInput
-            style={styles.input}
-            value={word}
-            onChangeText={setWord}
-            placeholder="Gali ereyga cusub"
-            placeholderTextColor={colors.grey}
-          />
-        </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Ereyga *</Text>
+            <TextInput
+              style={styles.input}
+              value={word}
+              onChangeText={setWord}
+              placeholder="Gali ereyga cusub"
+              placeholderTextColor={colors.grey}
+            />
+          </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Macnaha *</Text>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            value={definition}
-            onChangeText={setDefinition}
-            placeholder="Sharax macnaha ereyga"
-            placeholderTextColor={colors.grey}
-            multiline
-          />
-        </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Macnaha *</Text>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              value={definition}
+              onChangeText={setDefinition}
+              placeholder="Sharax macnaha ereyga"
+              placeholderTextColor={colors.grey}
+              multiline
+            />
+          </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Macluumaad Suugaan</Text>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            value={literaryContext}
-            onChangeText={setLiteraryContext}
-            placeholder="Sharax sida ereyga loo isticmaalo suugaanta"
-            placeholderTextColor={colors.grey}
-            multiline
-          />
-        </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Macluumaad Suugaan</Text>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              value={literaryContext}
+              onChangeText={setLiteraryContext}
+              placeholder="Sharax sida ereyga loo isticmaalo suugaanta"
+              placeholderTextColor={colors.grey}
+              multiline
+            />
+          </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Nooca</Text>
-          <View style={styles.categoryContainer}>
-            {categories.map((cat) => (
-              <TouchableOpacity
-                key={cat.key}
-                style={[
-                  styles.categoryButton,
-                  category === cat.key && styles.categoryButtonActive,
-                ]}
-                onPress={() => setCategory(cat.key as any)}
-              >
-                <Text
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Nooca</Text>
+            <View style={styles.categoryContainer}>
+              {categories.map((cat) => (
+                <TouchableOpacity
+                  key={cat.key}
                   style={[
-                    styles.categoryText,
-                    category === cat.key && styles.categoryTextActive,
+                    styles.categoryButton,
+                    category === cat.key && styles.categoryButtonActive,
                   ]}
+                  onPress={() => setCategory(cat.key as any)}
                 >
-                  {cat.label}
-                </Text>
+                  <Text
+                    style={[
+                      styles.categoryText,
+                      category === cat.key && styles.categoryTextActive,
+                    ]}
+                  >
+                    {cat.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          {(category === 'gabay' || category === 'hees') && (
+            <>
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Magaca Gabyaaga</Text>
+                <TextInput
+                  style={styles.input}
+                  value={poetName}
+                  onChangeText={setPoetName}
+                  placeholder="Gali magaca gabyaaga"
+                  placeholderTextColor={colors.grey}
+                />
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Taariikhda Gabayga</Text>
+                <TextInput
+                  style={[styles.input, styles.textArea]}
+                  value={poemHistory}
+                  onChangeText={setPoemHistory}
+                  placeholder="Sharax taariikhda gabayga"
+                  placeholderTextColor={colors.grey}
+                  multiline
+                />
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Gabayga</Text>
+                <TextInput
+                  style={[styles.input, styles.textArea]}
+                  value={poemText}
+                  onChangeText={setPoemText}
+                  placeholder="Qor gabayga ama qayb ka mid ah"
+                  placeholderTextColor={colors.grey}
+                  multiline
+                />
+              </View>
+            </>
+          )}
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Tusaalayaal</Text>
+            <View style={styles.listContainer}>
+              {examples.map((example, index) => (
+                <View key={index} style={styles.listItem}>
+                  <TextInput
+                    style={styles.listItemInput}
+                    value={example}
+                    onChangeText={(value) => updateExample(index, value)}
+                    placeholder={`Tusaale ${index + 1}`}
+                    placeholderTextColor={colors.grey}
+                  />
+                  {examples.length > 1 && (
+                    <TouchableOpacity onPress={() => removeExample(index)}>
+                      <Icon name="close-circle" size={20} color={colors.textSecondary} />
+                    </TouchableOpacity>
+                  )}
+                </View>
+              ))}
+              <TouchableOpacity style={styles.addButton} onPress={addExample}>
+                <Icon name="add" size={16} color={colors.textSecondary} />
+                <Text style={styles.addButtonText}>Ku dar tusaale</Text>
               </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
-        {(category === 'gabay' || category === 'hees') && (
-          <>
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Magaca Gabyaaga</Text>
-              <TextInput
-                style={styles.input}
-                value={poetName}
-                onChangeText={setPoetName}
-                placeholder="Gali magaca gabyaaga"
-                placeholderTextColor={colors.grey}
-              />
             </View>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Taariikhda Gabayga</Text>
-              <TextInput
-                style={[styles.input, styles.textArea]}
-                value={poemHistory}
-                onChangeText={setPoemHistory}
-                placeholder="Sharax taariikhda gabayga"
-                placeholderTextColor={colors.grey}
-                multiline
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Gabayga</Text>
-              <TextInput
-                style={[styles.input, styles.textArea]}
-                value={poemText}
-                onChangeText={setPoemText}
-                placeholder="Qor gabayga ama qayb ka mid ah"
-                placeholderTextColor={colors.grey}
-                multiline
-              />
-            </View>
-          </>
-        )}
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Tusaalayaal</Text>
-          <View style={styles.listContainer}>
-            {examples.map((example, index) => (
-              <View key={index} style={styles.listItem}>
-                <TextInput
-                  style={styles.listItemInput}
-                  value={example}
-                  onChangeText={(value) => updateExample(index, value)}
-                  placeholder={`Tusaale ${index + 1}`}
-                  placeholderTextColor={colors.grey}
-                />
-                {examples.length > 1 && (
-                  <TouchableOpacity onPress={() => removeExample(index)}>
-                    <Icon name="close-circle" size={20} color={colors.textSecondary} />
-                  </TouchableOpacity>
-                )}
-              </View>
-            ))}
-            <TouchableOpacity style={styles.addButton} onPress={addExample}>
-              <Icon name="add" size={16} color={colors.textSecondary} />
-              <Text style={styles.addButtonText}>Ku dar tusaale</Text>
-            </TouchableOpacity>
           </View>
-        </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Erayo la mid ah</Text>
-          <View style={styles.listContainer}>
-            {synonyms.map((synonym, index) => (
-              <View key={index} style={styles.listItem}>
-                <TextInput
-                  style={styles.listItemInput}
-                  value={synonym}
-                  onChangeText={(value) => updateSynonym(index, value)}
-                  placeholder={`Erey la mid ah ${index + 1}`}
-                  placeholderTextColor={colors.grey}
-                />
-                {synonyms.length > 1 && (
-                  <TouchableOpacity onPress={() => removeSynonym(index)}>
-                    <Icon name="close-circle" size={20} color={colors.textSecondary} />
-                  </TouchableOpacity>
-                )}
-              </View>
-            ))}
-            <TouchableOpacity style={styles.addButton} onPress={addSynonym}>
-              <Icon name="add" size={16} color={colors.textSecondary} />
-              <Text style={styles.addButtonText}>Ku dar erey la mid ah</Text>
-            </TouchableOpacity>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Erayo la mid ah</Text>
+            <View style={styles.listContainer}>
+              {synonyms.map((synonym, index) => (
+                <View key={index} style={styles.listItem}>
+                  <TextInput
+                    style={styles.listItemInput}
+                    value={synonym}
+                    onChangeText={(value) => updateSynonym(index, value)}
+                    placeholder={`Erey la mid ah ${index + 1}`}
+                    placeholderTextColor={colors.grey}
+                  />
+                  {synonyms.length > 1 && (
+                    <TouchableOpacity onPress={() => removeSynonym(index)}>
+                      <Icon name="close-circle" size={20} color={colors.textSecondary} />
+                    </TouchableOpacity>
+                  )}
+                </View>
+              ))}
+              <TouchableOpacity style={styles.addButton} onPress={addSynonym}>
+                <Icon name="add" size={16} color={colors.textSecondary} />
+                <Text style={styles.addButtonText}>Ku dar erey la mid ah</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </ScrollView>
 
+        {/* Fixed button container at the bottom */}
         <View style={styles.buttonContainer}>
           <Button
             text="Jooji"
@@ -410,7 +434,7 @@ export default function AddTermBottomSheet({
             disabled={!word.trim() || !definition.trim()}
           />
         </View>
-      </ScrollView>
+      </View>
     </SimpleBottomSheet>
   );
 }
