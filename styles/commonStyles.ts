@@ -66,12 +66,26 @@ export const commonStyles = StyleSheet.create({
     textAlign: 'center',
     color: colors.text,
     marginBottom: 8,
+    fontFamily: 'PlayfairDisplay_700Bold',
+    letterSpacing: 0.5,
   },
   subtitle: {
     fontSize: 18,
     fontWeight: '600',
     color: colors.text,
     marginBottom: 16,
+    fontFamily: 'Inter_600SemiBold',
+    letterSpacing: 0.3,
+  },
+  subtitleSecondary: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: 24,
+    fontFamily: 'Inter_500Medium',
+    letterSpacing: 0.2,
+    lineHeight: 24,
   },
   text: {
     fontSize: 16,
@@ -79,12 +93,14 @@ export const commonStyles = StyleSheet.create({
     color: colors.text,
     marginBottom: 8,
     lineHeight: 24,
+    fontFamily: 'Inter_600SemiBold',
   },
   textSecondary: {
     fontSize: 14,
     fontWeight: '400',
     color: colors.textSecondary,
     lineHeight: 20,
+    fontFamily: 'Inter_400Regular',
   },
   section: {
     width: '100%',
@@ -122,6 +138,7 @@ export const commonStyles = StyleSheet.create({
     fontSize: 16,
     color: colors.text,
     marginLeft: 8,
+    fontFamily: 'Inter_400Regular',
   },
   icon: {
     width: 24,
@@ -141,6 +158,7 @@ export const commonStyles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
     color: colors.text,
+    fontFamily: 'Inter_600SemiBold',
   },
   bottomTabContainer: {
     flexDirection: 'row',
@@ -158,11 +176,13 @@ export const commonStyles = StyleSheet.create({
     fontSize: 12,
     marginTop: 4,
     color: colors.textSecondary,
+    fontFamily: 'Inter_400Regular',
   },
   tabTextActive: {
     fontSize: 12,
     marginTop: 4,
     color: colors.primary,
     fontWeight: '600',
+    fontFamily: 'Inter_600SemiBold',
   },
 });

@@ -59,7 +59,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ entries }) => {
         {stats.map((stat, index) => (
           <View key={index} style={styles.statItem}>
             <View style={[styles.iconContainer, { backgroundColor: stat.color + '25' }]}>
-              <Icon name={stat.icon} size={20} color={stat.color} />
+              <Icon name={stat.icon} size={20} color={colors.text} />
             </View>
             <Text style={styles.statValue}>{stat.value}</Text>
             <Text style={styles.statLabel}>{stat.label}</Text>
@@ -80,6 +80,8 @@ const styles = StyleSheet.create({
     color: colors.text,
     marginBottom: 16,
     textAlign: 'center',
+    fontFamily: 'Inter_700Bold',
+    letterSpacing: 0.3,
   },
   statsGrid: {
     flexDirection: 'row',
@@ -105,12 +107,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.text,
     marginBottom: 4,
+    fontFamily: 'Inter_700Bold',
   },
   statLabel: {
     fontSize: 12,
     fontWeight: '600',
     color: colors.textSecondary,
     textAlign: 'center',
+    fontFamily: 'Inter_600SemiBold',
   },
 });
 

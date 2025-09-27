@@ -114,7 +114,7 @@ const SettingsBottomSheet: React.FC<SettingsBottomSheetProps> = ({
         <View style={styles.header}>
           <Text style={styles.title}>Dejinta</Text>
           <TouchableOpacity onPress={onClose}>
-            <Icon name="close" size={24} color={colors.textSecondary} />
+            <Icon name="close" size={24} color={colors.text} />
           </TouchableOpacity>
         </View>
 
@@ -163,7 +163,7 @@ const SettingsBottomSheet: React.FC<SettingsBottomSheetProps> = ({
                   <Icon 
                     name={option.icon} 
                     size={20} 
-                    color={option.destructive ? colors.error : colors.primary} 
+                    color={option.destructive ? colors.error : colors.text} 
                   />
                 </View>
                 <View style={styles.optionText}>
@@ -186,7 +186,7 @@ const SettingsBottomSheet: React.FC<SettingsBottomSheetProps> = ({
                 <Icon 
                   name="chevron-forward" 
                   size={20} 
-                  color={colors.textSecondary} 
+                  color={colors.text} 
                 />
               )}
             </TouchableOpacity>
@@ -214,6 +214,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     color: colors.text,
+    fontFamily: 'Inter_700Bold',
+    letterSpacing: 0.3,
   },
   statsCard: {
     flexDirection: 'row',
@@ -229,12 +231,14 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '700',
     color: colors.primary,
+    fontFamily: 'Inter_700Bold',
   },
   statLabel: {
     fontSize: 14,
     fontWeight: '600',
     color: colors.textSecondary,
     marginTop: 4,
+    fontFamily: 'Inter_600SemiBold',
   },
   statDivider: {
     width: 1,
@@ -249,12 +253,16 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.text,
     marginBottom: 12,
+    fontFamily: 'Inter_700Bold',
+    letterSpacing: 0.3,
   },
   aboutText: {
     fontSize: 15,
     fontWeight: '600',
     color: colors.text,
     lineHeight: 22,
+    fontFamily: 'Inter_600SemiBold',
+    letterSpacing: 0.2,
   },
   optionsContainer: {
     gap: 12,
@@ -298,6 +306,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.text,
     marginBottom: 2,
+    fontFamily: 'Inter_700Bold',
   },
   optionTitleDestructive: {
     color: colors.error,
@@ -306,6 +315,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: colors.textSecondary,
+    fontFamily: 'Inter_600SemiBold',
   },
   loadingContainer: {
     width: 20,
@@ -315,6 +325,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: colors.textSecondary,
+    fontFamily: 'Inter_600SemiBold',
   },
 });
 

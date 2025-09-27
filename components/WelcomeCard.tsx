@@ -24,10 +24,10 @@ const WelcomeCard: React.FC<WelcomeCardProps> = ({ onDismiss }) => {
     <View style={[commonStyles.card, styles.container]}>
       <View style={styles.header}>
         <View style={styles.iconContainer}>
-          <Icon name="hand-right-outline" size={24} color={colors.primary} />
+          <Icon name="hand-right-outline" size={24} color={colors.text} />
         </View>
         <TouchableOpacity onPress={handleDismiss} style={styles.closeButton}>
-          <Icon name="close" size={20} color={colors.textSecondary} />
+          <Icon name="close" size={20} color={colors.text} />
         </TouchableOpacity>
       </View>
       
@@ -38,15 +38,15 @@ const WelcomeCard: React.FC<WelcomeCardProps> = ({ onDismiss }) => {
       
       <View style={styles.features}>
         <View style={styles.feature}>
-          <Icon name="search-outline" size={16} color={colors.primary} />
+          <Icon name="search-outline" size={16} color={colors.text} />
           <Text style={styles.featureText}>Raadi erayo</Text>
         </View>
         <View style={styles.feature}>
-          <Icon name="add-circle-outline" size={16} color={colors.primary} />
+          <Icon name="add-circle-outline" size={16} color={colors.text} />
           <Text style={styles.featureText}>Ku dar erayo cusub</Text>
         </View>
         <View style={styles.feature}>
-          <Icon name="bookmark-outline" size={16} color={colors.primary} />
+          <Icon name="bookmark-outline" size={16} color={colors.text} />
           <Text style={styles.featureText}>Kaydi erayo muhiim ah</Text>
         </View>
       </View>
@@ -82,6 +82,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.text,
     marginBottom: 8,
+    fontFamily: 'PlayfairDisplay_700Bold',
+    letterSpacing: 0.3,
   },
   description: {
     fontSize: 15,
@@ -89,6 +91,8 @@ const styles = StyleSheet.create({
     color: colors.text,
     lineHeight: 22,
     marginBottom: 16,
+    fontFamily: 'Inter_600SemiBold',
+    letterSpacing: 0.2,
   },
   features: {
     gap: 8,
@@ -102,6 +106,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.text,
     fontWeight: '600',
+    fontFamily: 'Inter_600SemiBold',
   },
 });
 

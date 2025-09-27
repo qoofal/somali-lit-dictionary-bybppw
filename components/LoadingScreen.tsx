@@ -15,7 +15,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
     <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.iconContainer}>
-          <Icon name="book-outline" size={64} color={colors.primary} />
+          <Icon name="book-outline" size={64} color={colors.text} />
         </View>
         
         <Text style={styles.title}>Qaamuuska Suugaanta</Text>
@@ -57,6 +57,8 @@ const styles = StyleSheet.create({
     color: colors.text,
     textAlign: 'center',
     marginBottom: 4,
+    fontFamily: 'PlayfairDisplay_700Bold',
+    letterSpacing: 0.5,
   },
   subtitle: {
     fontSize: 20,
@@ -64,6 +66,8 @@ const styles = StyleSheet.create({
     color: colors.primary,
     textAlign: 'center',
     marginBottom: 48,
+    fontFamily: 'PlayfairDisplay_700Bold',
+    letterSpacing: 0.3,
   },
   loadingContainer: {
     alignItems: 'center',
@@ -74,6 +78,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.text,
     textAlign: 'center',
+    fontFamily: 'Inter_600SemiBold',
   },
 });
 

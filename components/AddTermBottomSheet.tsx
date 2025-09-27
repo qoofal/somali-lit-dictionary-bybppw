@@ -89,7 +89,7 @@ const AddTermBottomSheet: React.FC<AddTermBottomSheetProps> = ({
         <View style={styles.header}>
           <Text style={styles.title}>Ku dar Erey Cusub</Text>
           <TouchableOpacity onPress={handleClose}>
-            <Icon name="close" size={24} color={colors.textSecondary} />
+            <Icon name="close" size={24} color={colors.text} />
           </TouchableOpacity>
         </View>
 
@@ -270,6 +270,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     color: colors.text,
+    fontFamily: 'Inter_700Bold',
+    letterSpacing: 0.3,
   },
   inputGroup: {
     marginBottom: 20,
@@ -279,12 +281,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.text,
     marginBottom: 8,
+    fontFamily: 'Inter_700Bold',
   },
   helperText: {
     fontSize: 14,
     fontWeight: '500',
     color: colors.textSecondary,
     marginBottom: 8,
+    fontFamily: 'Inter_500Medium',
   },
   input: {
     borderWidth: 1,
@@ -296,6 +300,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.text,
     backgroundColor: colors.backgroundAlt,
+    fontFamily: 'Inter_600SemiBold',
   },
   textArea: {
     minHeight: 100,
@@ -319,6 +324,8 @@ const styles = StyleSheet.create({
     color: colors.primary,
     marginBottom: 16,
     textAlign: 'center',
+    fontFamily: 'Inter_700Bold',
+    letterSpacing: 0.3,
   },
   categoryContainer: {
     flexDirection: 'row',
@@ -340,10 +347,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.text,
     fontWeight: '600',
+    fontFamily: 'Inter_600SemiBold',
   },
   categoryButtonTextActive: {
     color: colors.text,
     fontWeight: '700',
+    fontFamily: 'Inter_700Bold',
   },
   buttonContainer: {
     marginTop: 24,

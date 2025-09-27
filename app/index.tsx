@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Text, View, TextInput, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { commonStyles, colors } from '../styles/commonStyles';
@@ -59,13 +60,13 @@ export default function MainScreen() {
     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
       <View style={{ paddingTop: 20 }}>
         <Text style={commonStyles.title}>Qaamuuska Suugaanta Soomaaliyeed</Text>
-        <Text style={[commonStyles.textSecondary, { textAlign: 'center', marginBottom: 24 }]}>
-          Somali Literature Dictionary for Academic Students
+        <Text style={commonStyles.subtitleSecondary}>
+          qaamuuska erey-bixin suugaaneedka afka Soomaaliga
         </Text>
 
         {/* Search Bar */}
         <View style={commonStyles.searchContainer}>
-          <Icon name="search" size={20} color={colors.textSecondary} />
+          <Icon name="search" size={20} color={colors.text} />
           <TextInput
             style={commonStyles.searchInput}
             placeholder="Raadi eray..."
@@ -102,7 +103,7 @@ export default function MainScreen() {
         
         {/* Search Bar */}
         <View style={commonStyles.searchContainer}>
-          <Icon name="search" size={20} color={colors.textSecondary} />
+          <Icon name="search" size={20} color={colors.text} />
           <TextInput
             style={commonStyles.searchInput}
             placeholder="Gali ereyga aad raadineyso..."
@@ -140,7 +141,7 @@ export default function MainScreen() {
 
         {searchQuery.length > 0 && filteredEntries.length === 0 && (
           <View style={[commonStyles.card, { alignItems: 'center', padding: 32 }]}>
-            <Icon name="search" size={48} color={colors.textSecondary} />
+            <Icon name="search" size={48} color={colors.text} />
             <Text style={[commonStyles.text, { textAlign: 'center', marginTop: 16 }]}>
               Lama helin eray la mid ah "{searchQuery}"
             </Text>
@@ -168,7 +169,7 @@ export default function MainScreen() {
           }]}
           onPress={() => setIsAddTermVisible(true)}
         >
-          <Icon name="add-circle" size={48} color={colors.primary} />
+          <Icon name="add-circle" size={48} color={colors.text} />
           <Text style={[commonStyles.text, { 
             textAlign: 'center', 
             marginTop: 16,
@@ -222,11 +223,11 @@ export default function MainScreen() {
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
           {activeTab === 'search' && searchQuery.length > 0 && (
             <TouchableOpacity onPress={() => setSearchQuery('')}>
-              <Icon name="close" size={24} color={colors.textSecondary} />
+              <Icon name="close" size={24} color={colors.text} />
             </TouchableOpacity>
           )}
           <TouchableOpacity onPress={() => setIsSettingsVisible(true)}>
-            <Icon name="settings-outline" size={24} color={colors.textSecondary} />
+            <Icon name="settings-outline" size={24} color={colors.text} />
           </TouchableOpacity>
         </View>
       </View>
@@ -248,7 +249,7 @@ export default function MainScreen() {
           <Icon 
             name="home" 
             size={24} 
-            color={activeTab === 'home' ? colors.primary : colors.textSecondary} 
+            color={activeTab === 'home' ? colors.primary : colors.text} 
           />
           <Text style={activeTab === 'home' ? commonStyles.tabTextActive : commonStyles.tabText}>
             Guriga
@@ -262,7 +263,7 @@ export default function MainScreen() {
           <Icon 
             name="search" 
             size={24} 
-            color={activeTab === 'search' ? colors.primary : colors.textSecondary} 
+            color={activeTab === 'search' ? colors.primary : colors.text} 
           />
           <Text style={activeTab === 'search' ? commonStyles.tabTextActive : commonStyles.tabText}>
             Raadi
@@ -276,7 +277,7 @@ export default function MainScreen() {
           <Icon 
             name="add-circle" 
             size={24} 
-            color={activeTab === 'add' ? colors.primary : colors.textSecondary} 
+            color={activeTab === 'add' ? colors.primary : colors.text} 
           />
           <Text style={activeTab === 'add' ? commonStyles.tabTextActive : commonStyles.tabText}>
             Ku dar
