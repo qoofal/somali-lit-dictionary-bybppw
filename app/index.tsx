@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Text, View, TextInput, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Text, View, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, ImageBackground } from 'react-native';
 import { commonStyles, colors } from '../styles/commonStyles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from '../components/Icon';
@@ -15,6 +15,7 @@ import WelcomeCard from '../components/WelcomeCard';
 import CategoryFilter from '../components/CategoryFilter';
 import AuthScreen from '../components/AuthScreen';
 import CategoryManagement from '../components/CategoryManagement';
+import ContributionBottomSheet from '../components/ContributionBottomSheet';
 import { DictionaryEntry } from '../types/dictionary';
 import { useDictionary } from '../hooks/useDictionary';
 import { useAuth } from '../hooks/useAuth';
@@ -26,9 +27,10 @@ export default function MainScreen() {
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [isAdminPanelVisible, setIsAdminPanelVisible] = useState(false);
   const [isCategoryManagementVisible, setIsCategoryManagementVisible] = useState(false);
+  const [isContributionVisible, setIsContributionVisible] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'home' | 'search' | 'add'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'search' | 'contribute'>('home');
   
   const { 
     entries, 
@@ -200,7 +202,7 @@ export default function MainScreen() {
               Lama helin eray la mid ah "{searchQuery}"
             </Text>
             <Text style={[commonStyles.textSecondary, { textAlign: 'center', marginTop: 8 }]}>
-              Isku day erayo kale ama ku dar erey cusub
+              Isku day erayo kale ama soo gudbi talooyin cusub
             </Text>
           </View>
         )}
@@ -208,37 +210,79 @@ export default function MainScreen() {
     </ScrollView>
   );
 
-  const renderAddContent = () => (
+  const renderContributeContent = () => (
     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
       <View style={{ paddingTop: 20 }}>
-        <Text style={commonStyles.subtitle}>Ku dar Erey Cusub</Text>
+        <Text style={commonStyles.subtitle}>
+          {isAdmin() ? 'Ku dar Erey Cusub' : 'Soo gudbi Talooyin'}
+        </Text>
         
-        <TouchableOpacity
-          style={[commonStyles.card, { 
-            alignItems: 'center', 
-            padding: 32,
-            borderStyle: 'dashed',
-            borderColor: colors.primary,
-            backgroundColor: colors.backgroundAlt
-          }]}
-          onPress={() => setIsAddTermVisible(true)}
-        >
-          <Icon name="add-circle" size={48} color={colors.text} />
-          <Text style={[commonStyles.text, { 
-            textAlign: 'center', 
-            marginTop: 16,
-            color: colors.primary,
-            fontWeight: '600'
-          }]}>
-            {isAdmin() ? 'Ku dar Erey Cusub' : 'Kaliya Admin-ada ayaa ku dari kara'}
-          </Text>
-          <Text style={[commonStyles.textSecondary, { textAlign: 'center', marginTop: 8 }]}>
-            {isAdmin() 
-              ? 'Gacan ku haye horumarinta qaamuuska'
-              : 'La xiriir admin-ka si aad u darto erayo cusub'
-            }
-          </Text>
-        </TouchableOpacity>
+        {isAdmin() ? (
+          // Admin can add terms directly
+          <TouchableOpacity
+            style={[commonStyles.card, { 
+              alignItems: 'center', 
+              padding: 32,
+              borderStyle: 'dashed',
+              borderColor: colors.primary,
+              backgroundColor: colors.backgroundAlt
+            }]}
+            onPress={() => setIsAddTermVisible(true)}
+          >
+            <Icon name="add-circle" size={48} color={colors.primary} />
+            <Text style={[commonStyles.text, { 
+              textAlign: 'center', 
+              marginTop: 16,
+              color: colors.primary,
+              fontWeight: '600'
+            }]}>
+              Ku dar Erey Cusub
+            </Text>
+            <Text style={[commonStyles.textSecondary, { textAlign: 'center', marginTop: 8 }]}>
+              Gacan ku haye horumarinta qaamuuska
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          // Regular users can only contribute suggestions
+          <TouchableOpacity
+            style={[commonStyles.card, { 
+              alignItems: 'center', 
+              padding: 32,
+              borderStyle: 'dashed',
+              borderColor: colors.primary,
+              backgroundColor: colors.backgroundAlt
+            }]}
+            onPress={() => setIsContributionVisible(true)}
+          >
+            <Icon name="bulb" size={48} color={colors.primary} />
+            <Text style={[commonStyles.text, { 
+              textAlign: 'center', 
+              marginTop: 16,
+              color: colors.primary,
+              fontWeight: '600'
+            }]}>
+              Soo gudbi Talo
+            </Text>
+            <Text style={[commonStyles.textSecondary, { textAlign: 'center', marginTop: 8 }]}>
+              Soo gudbi erayo cusub ama ra&apos;yi ku saabsan qaamuuska
+            </Text>
+          </TouchableOpacity>
+        )}
+
+        {/* Information Card for Regular Users */}
+        {!isAdmin() && (
+          <View style={[commonStyles.card, { marginTop: 16, backgroundColor: '#FEF3C7' }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+              <Icon name="information-circle" size={20} color="#92400E" />
+              <Text style={[commonStyles.text, { marginLeft: 8, fontWeight: '600', color: '#92400E' }]}>
+                Macluumaad
+              </Text>
+            </View>
+            <Text style={[commonStyles.textSecondary, { color: '#92400E' }]}>
+              Kaliya admin-ada ayaa si toos ah u dari kara erayo cusub. Isticmaalayaasha caadiga ah waxay soo gudbi karaan talooyin oo admin-ku uu eegi doono.
+            </Text>
+          </View>
+        )}
 
         {/* Recent Additions */}
         <View style={{ marginTop: 24 }}>
@@ -262,8 +306,8 @@ export default function MainScreen() {
         return renderHomeContent();
       case 'search':
         return renderSearchContent();
-      case 'add':
-        return renderAddContent();
+      case 'contribute':
+        return renderContributeContent();
       default:
         return renderHomeContent();
     }
@@ -276,136 +320,165 @@ export default function MainScreen() {
 
   // Show auth screen if user is not authenticated
   if (!isAuthenticated) {
-    return <AuthScreen onLogin={login} onRegister={register} />;
+    return (
+      <ImageBackground 
+        source={{ uri: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop' }}
+        style={{ flex: 1 }}
+        resizeMode="cover"
+      >
+        <AuthScreen onLogin={login} onRegister={register} />
+      </ImageBackground>
+    );
   }
 
   return (
-    <SafeAreaView style={commonStyles.container}>
-      {/* Header */}
-      <View style={commonStyles.headerContainer}>
-        <Text style={commonStyles.headerTitle}>
-          {activeTab === 'home' && 'Qaamuuska'}
-          {activeTab === 'search' && 'Raadinta'}
-          {activeTab === 'add' && 'Ku dar'}
-        </Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-          {activeTab === 'search' && searchQuery.length > 0 && (
-            <TouchableOpacity onPress={() => setSearchQuery('')}>
-              <Icon name="close" size={24} color={colors.text} />
+    <ImageBackground 
+      source={{ uri: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop' }}
+      style={{ flex: 1 }}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={commonStyles.container}>
+        {/* Header */}
+        <View style={commonStyles.headerContainer}>
+          <Text style={commonStyles.headerTitle}>
+            {activeTab === 'home' && 'Qaamuuska'}
+            {activeTab === 'search' && 'Raadinta'}
+            {activeTab === 'contribute' && (isAdmin() ? 'Ku dar' : 'Soo gudbi')}
+          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            {activeTab === 'search' && searchQuery.length > 0 && (
+              <TouchableOpacity onPress={() => setSearchQuery('')}>
+                <Icon name="close" size={24} color={colors.text} />
+              </TouchableOpacity>
+            )}
+            {isAdmin() && (
+              <>
+                <TouchableOpacity onPress={() => setIsCategoryManagementVisible(true)}>
+                  <Icon name="list" size={24} color={colors.primary} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setIsAdminPanelVisible(true)}>
+                  <Icon name="shield-checkmark" size={24} color={colors.primary} />
+                </TouchableOpacity>
+              </>
+            )}
+            <TouchableOpacity onPress={() => setIsSettingsVisible(true)}>
+              <Icon name="settings-outline" size={24} color={colors.text} />
             </TouchableOpacity>
-          )}
-          {isAdmin() && (
-            <>
-              <TouchableOpacity onPress={() => setIsCategoryManagementVisible(true)}>
-                <Icon name="list" size={24} color={colors.primary} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setIsAdminPanelVisible(true)}>
-                <Icon name="shield-checkmark" size={24} color={colors.primary} />
-              </TouchableOpacity>
-            </>
-          )}
-          <TouchableOpacity onPress={() => setIsSettingsVisible(true)}>
-            <Icon name="settings-outline" size={24} color={colors.text} />
+          </View>
+        </View>
+
+        {/* Content */}
+        <View style={commonStyles.content}>
+          {renderContent()}
+        </View>
+
+        {/* Bottom Navigation */}
+        <View style={commonStyles.bottomTabContainer}>
+          <TouchableOpacity
+            style={commonStyles.tabItem}
+            onPress={() => {
+              setActiveTab('home');
+              setSearchQuery('');
+            }}
+          >
+            <Icon 
+              name="home" 
+              size={24} 
+              color={activeTab === 'home' ? colors.primary : colors.text} 
+            />
+            <Text style={activeTab === 'home' ? commonStyles.tabTextActive : commonStyles.tabText}>
+              Ardaaga
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={commonStyles.tabItem}
+            onPress={() => setActiveTab('search')}
+          >
+            <Icon 
+              name="search" 
+              size={24} 
+              color={activeTab === 'search' ? colors.primary : colors.text} 
+            />
+            <Text style={activeTab === 'search' ? commonStyles.tabTextActive : commonStyles.tabText}>
+              Raadi
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={commonStyles.tabItem}
+            onPress={() => setActiveTab('contribute')}
+          >
+            <Icon 
+              name={isAdmin() ? "add-circle" : "bulb"} 
+              size={24} 
+              color={activeTab === 'contribute' ? colors.primary : colors.text} 
+            />
+            <Text style={activeTab === 'contribute' ? commonStyles.tabTextActive : commonStyles.tabText}>
+              {isAdmin() ? 'Ku dar' : 'Soo gudbi'}
+            </Text>
           </TouchableOpacity>
         </View>
-      </View>
 
-      {/* Content */}
-      <View style={commonStyles.content}>
-        {renderContent()}
-      </View>
-
-      {/* Bottom Navigation */}
-      <View style={commonStyles.bottomTabContainer}>
-        <TouchableOpacity
-          style={commonStyles.tabItem}
-          onPress={() => {
-            setActiveTab('home');
-            setSearchQuery('');
-          }}
-        >
-          <Icon 
-            name="home" 
-            size={24} 
-            color={activeTab === 'home' ? colors.primary : 'white'} 
+        {/* Add Term Bottom Sheet - Only for Admins */}
+        {isAdmin() && (
+          <AddTermBottomSheet
+            isVisible={isAddTermVisible}
+            onClose={() => setIsAddTermVisible(false)}
+            onAddTerm={(term) => {
+              addEntry(term, user?.username || 'Unknown');
+              setIsAddTermVisible(false);
+              console.log('New term added:', term);
+            }}
+            isAdmin={isAdmin()}
           />
-          <Text style={activeTab === 'home' ? commonStyles.tabTextActive : commonStyles.tabText}>
-            Ardaaga
-          </Text>
-        </TouchableOpacity>
+        )}
 
-        <TouchableOpacity
-          style={commonStyles.tabItem}
-          onPress={() => setActiveTab('search')}
-        >
-          <Icon 
-            name="search" 
-            size={24} 
-            color={activeTab === 'search' ? colors.primary : 'white'} 
+        {/* Contribution Bottom Sheet - For Regular Users */}
+        {!isAdmin() && (
+          <ContributionBottomSheet
+            isVisible={isContributionVisible}
+            onClose={() => setIsContributionVisible(false)}
+            onSubmit={(contribution) => {
+              console.log('New contribution submitted:', contribution);
+              setIsContributionVisible(false);
+              // Here you would typically send the contribution to admin for review
+            }}
           />
-          <Text style={activeTab === 'search' ? commonStyles.tabTextActive : commonStyles.tabText}>
-            Raadi
-          </Text>
-        </TouchableOpacity>
+        )}
 
-        <TouchableOpacity
-          style={commonStyles.tabItem}
-          onPress={() => setActiveTab('add')}
-        >
-          <Icon 
-            name="add-circle" 
-            size={24} 
-            color={activeTab === 'add' ? colors.primary : 'white'} 
-          />
-          <Text style={activeTab === 'add' ? commonStyles.tabTextActive : commonStyles.tabText}>
-            Ku dar
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Add Term Bottom Sheet */}
-      <AddTermBottomSheet
-        isVisible={isAddTermVisible}
-        onClose={() => setIsAddTermVisible(false)}
-        onAddTerm={(term) => {
-          addEntry(term, user?.username || 'Unknown');
-          setIsAddTermVisible(false);
-          console.log('New term added:', term);
-        }}
-        isAdmin={isAdmin()}
-      />
-
-      {/* Settings Bottom Sheet */}
-      <SettingsBottomSheet
-        isVisible={isSettingsVisible}
-        onClose={() => setIsSettingsVisible(false)}
-        onExport={exportDictionary}
-        onImport={importDictionary}
-        onClear={clearAllEntries}
-        onLogout={logout}
-        entriesCount={entries.length}
-        currentUser={user ? { username: user.username, role: user.role } : null}
-        isAdmin={isAdmin()}
-      />
-
-      {/* Category Management Bottom Sheet */}
-      {isAdmin() && (
-        <CategoryManagement
-          isVisible={isCategoryManagementVisible}
-          onClose={() => setIsCategoryManagementVisible(false)}
-          entries={entries}
-        />
-      )}
-
-      {/* Admin Panel */}
-      {isAdmin() && (
-        <AdminPanel
-          isVisible={isAdminPanelVisible}
-          onClose={() => setIsAdminPanelVisible(false)}
-          currentUser={user!}
+        {/* Settings Bottom Sheet */}
+        <SettingsBottomSheet
+          isVisible={isSettingsVisible}
+          onClose={() => setIsSettingsVisible(false)}
+          onExport={exportDictionary}
+          onImport={importDictionary}
+          onClear={clearAllEntries}
+          onLogout={logout}
           entriesCount={entries.length}
+          currentUser={user ? { username: user.username, role: user.role } : null}
+          isAdmin={isAdmin()}
         />
-      )}
-    </SafeAreaView>
+
+        {/* Category Management Bottom Sheet - Admin Only */}
+        {isAdmin() && (
+          <CategoryManagement
+            isVisible={isCategoryManagementVisible}
+            onClose={() => setIsCategoryManagementVisible(false)}
+            entries={entries}
+          />
+        )}
+
+        {/* Admin Panel - Admin Only */}
+        {isAdmin() && (
+          <AdminPanel
+            isVisible={isAdminPanelVisible}
+            onClose={() => setIsAdminPanelVisible(false)}
+            currentUser={user!}
+            entriesCount={entries.length}
+          />
+        )}
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
