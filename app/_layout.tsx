@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { Platform } from 'react-native';
+import { Platform, ImageBackground } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Stack } from 'expo-router';
@@ -63,18 +63,24 @@ export default function RootLayout() {
     return null;
   }
 
-  console.log('RootLayout: Rendering app with fonts loaded');
+  console.log('RootLayout: Rendering app with fonts loaded and background image');
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: '#0F172A' },
-          }}
-        />
-      </SafeAreaProvider>
+      <ImageBackground
+        source={require('../assets/images/21e5d6bd-8b8d-40fb-bef7-a3ccf191bc4d.jpeg')}
+        style={{ flex: 1 }}
+        resizeMode="cover"
+      >
+        <SafeAreaProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: 'transparent' },
+            }}
+          />
+        </SafeAreaProvider>
+      </ImageBackground>
     </GestureHandlerRootView>
   );
 }
