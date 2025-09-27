@@ -5,6 +5,7 @@ export const colors = {
   primary: '#1E3A8A',       // Navy blue as primary color
   secondary: '#3B82F6',     // Lighter blue for accents
   accent: '#60A5FA',        // Even lighter blue for emphasis
+  skyBlue: '#87CEEB',       // Sky blue for text inputs
   background: '#0F172A',    // Dark navy background
   backgroundAlt: '#1E293B', // Slightly lighter navy background
   text: '#FFFFFF',          // Bold white text
@@ -125,7 +126,7 @@ export const commonStyles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.backgroundAlt,
+    backgroundColor: colors.skyBlue,
     borderRadius: 25,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -136,7 +137,7 @@ export const commonStyles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: colors.text,
+    color: colors.background,
     marginLeft: 8,
     fontFamily: 'Inter_400Regular',
   },

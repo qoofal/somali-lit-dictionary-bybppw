@@ -37,11 +37,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter_600SemiBold',
   },
   input: {
-    backgroundColor: colors.backgroundAlt,
+    backgroundColor: colors.skyBlue,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-    color: colors.text,
+    color: colors.background,
     borderWidth: 1,
     borderColor: colors.border,
     fontFamily: 'Inter_400Regular',
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   listItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.backgroundAlt,
+    backgroundColor: colors.skyBlue,
     borderRadius: 8,
     padding: 8,
     marginBottom: 8,
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   listItemInput: {
     flex: 1,
     fontSize: 14,
-    color: colors.text,
+    color: colors.background,
     fontFamily: 'Inter_400Regular',
   },
   addButton: {
@@ -259,7 +259,7 @@ export default function AddTermBottomSheet({
             value={word}
             onChangeText={setWord}
             placeholder="Gali ereyga cusub"
-            placeholderTextColor={colors.textSecondary}
+            placeholderTextColor={colors.grey}
             editable={isAdmin}
           />
         </View>
@@ -271,7 +271,7 @@ export default function AddTermBottomSheet({
             value={definition}
             onChangeText={setDefinition}
             placeholder="Sharax macnaha ereyga"
-            placeholderTextColor={colors.textSecondary}
+            placeholderTextColor={colors.grey}
             multiline
             editable={isAdmin}
           />
@@ -284,7 +284,7 @@ export default function AddTermBottomSheet({
             value={literaryContext}
             onChangeText={setLiteraryContext}
             placeholder="Sharax sida ereyga loo isticmaalo suugaanta"
-            placeholderTextColor={colors.textSecondary}
+            placeholderTextColor={colors.grey}
             multiline
             editable={isAdmin}
           />
@@ -325,7 +325,7 @@ export default function AddTermBottomSheet({
                 value={poetName}
                 onChangeText={setPoetName}
                 placeholder="Gali magaca gabyaaga"
-                placeholderTextColor={colors.textSecondary}
+                placeholderTextColor={colors.grey}
                 editable={isAdmin}
               />
             </View>
@@ -337,7 +337,7 @@ export default function AddTermBottomSheet({
                 value={poemHistory}
                 onChangeText={setPoemHistory}
                 placeholder="Sharax taariikhda gabayga"
-                placeholderTextColor={colors.textSecondary}
+                placeholderTextColor={colors.grey}
                 multiline
                 editable={isAdmin}
               />
@@ -350,7 +350,7 @@ export default function AddTermBottomSheet({
                 value={poemText}
                 onChangeText={setPoemText}
                 placeholder="Qor gabayga ama qayb ka mid ah"
-                placeholderTextColor={colors.textSecondary}
+                placeholderTextColor={colors.grey}
                 multiline
                 editable={isAdmin}
               />
@@ -368,7 +368,7 @@ export default function AddTermBottomSheet({
                   value={example}
                   onChangeText={(value) => updateExample(index, value)}
                   placeholder={`Tusaale ${index + 1}`}
-                  placeholderTextColor={colors.textSecondary}
+                  placeholderTextColor={colors.grey}
                   editable={isAdmin}
                 />
                 {examples.length > 1 && isAdmin && (
@@ -397,7 +397,7 @@ export default function AddTermBottomSheet({
                   value={synonym}
                   onChangeText={(value) => updateSynonym(index, value)}
                   placeholder={`Erey la mid ah ${index + 1}`}
-                  placeholderTextColor={colors.textSecondary}
+                  placeholderTextColor={colors.grey}
                   editable={isAdmin}
                 />
                 {synonyms.length > 1 && isAdmin && (

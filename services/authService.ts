@@ -1,6 +1,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User, NewUser, LoginCredentials } from '../types/user';
+import { verificationService } from './verificationService';
 
 const USERS_STORAGE_KEY = 'somali_dictionary_users';
 const CURRENT_USER_KEY = 'somali_dictionary_current_user';
@@ -36,8 +37,15 @@ export const authService = {
           password: hashPassword('admin123') // Default admin password
         };
         await AsyncStorage.setItem(USERS_STORAGE_KEY, JSON.stringify([adminWithPassword]));
+        
+        // Mark admin email as verified by default
+        await verificationService.markEmailAsVerified(DEFAULT_ADMIN.email);
+        
         console.log('Default admin user created with email: admin@admin.com, password: admin123');
       }
+      
+      // Clean up expired verification codes on startup
+      await verificationService.cleanupExpiredCodes();
     } catch (error) {
       console.error('Error initializing auth:', error);
     }
@@ -72,6 +80,12 @@ export const authService = {
       const existingUser = users.find(u => u.username === userData.username || u.email === userData.email);
       if (existingUser) {
         return { success: false, message: 'Magaca isticmaalaha ama email-ka ayaa horay loo isticmaalay' };
+      }
+
+      // Check if email is verified (this should be called after verification)
+      const isEmailVerified = await verificationService.isEmailVerified(userData.email);
+      if (!isEmailVerified) {
+        return { success: false, message: 'Email-ka waa in la xaqiijiyaa ka hor inta aan diiwaangelinta la dhammaysan' };
       }
 
       // Create new user

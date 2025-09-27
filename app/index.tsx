@@ -110,11 +110,11 @@ export default function MainScreen() {
 
         {/* Search Bar */}
         <View style={commonStyles.searchContainer}>
-          <Icon name="search" size={20} color={colors.text} />
+          <Icon name="search" size={20} color={colors.background} />
           <TextInput
             style={commonStyles.searchInput}
             placeholder="Raadi eray..."
-            placeholderTextColor={colors.textSecondary}
+            placeholderTextColor={colors.grey}
             value={searchQuery}
             onChangeText={setSearchQuery}
             onFocus={() => setActiveTab('search')}
@@ -152,11 +152,11 @@ export default function MainScreen() {
         
         {/* Search Bar */}
         <View style={commonStyles.searchContainer}>
-          <Icon name="search" size={20} color={colors.text} />
+          <Icon name="search" size={20} color={colors.background} />
           <TextInput
             style={commonStyles.searchInput}
             placeholder="Gali ereyga aad raadineyso..."
-            placeholderTextColor={colors.textSecondary}
+            placeholderTextColor={colors.grey}
             value={searchQuery}
             onChangeText={setSearchQuery}
             autoFocus

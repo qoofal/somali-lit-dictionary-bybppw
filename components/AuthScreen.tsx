@@ -6,6 +6,7 @@ import { colors, commonStyles } from '../styles/commonStyles';
 import Icon from './Icon';
 import Button from './Button';
 import { NewUser, LoginCredentials } from '../types/user';
+import { verificationService } from '../services/verificationService';
 
 interface AuthScreenProps {
   onLogin: (credentials: LoginCredentials) => Promise<{ success: boolean; message: string }>;
@@ -62,17 +63,67 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter_600SemiBold',
   },
   input: {
-    backgroundColor: colors.backgroundAlt,
+    backgroundColor: colors.skyBlue,
     borderRadius: 12,
     padding: 16,
     fontSize: 16,
-    color: colors.text,
+    color: colors.background,
     borderWidth: 1,
     borderColor: colors.border,
     fontFamily: 'Inter_400Regular',
   },
   inputFocused: {
     borderColor: colors.primary,
+    backgroundColor: colors.skyBlue,
+  },
+  verificationContainer: {
+    backgroundColor: colors.backgroundAlt,
+    borderRadius: 12,
+    padding: 20,
+    marginTop: 16,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.primary,
+  },
+  verificationTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 8,
+    fontFamily: 'Inter_600SemiBold',
+  },
+  verificationText: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginBottom: 16,
+    lineHeight: 20,
+    fontFamily: 'Inter_400Regular',
+  },
+  codeInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 16,
+  },
+  codeInput: {
+    flex: 1,
+    backgroundColor: colors.skyBlue,
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 18,
+    color: colors.background,
+    textAlign: 'center',
+    fontFamily: 'Inter_600SemiBold',
+    letterSpacing: 2,
+  },
+  resendButton: {
+    alignSelf: 'center',
+    marginTop: 8,
+  },
+  resendButtonText: {
+    fontSize: 14,
+    color: colors.primary,
+    fontFamily: 'Inter_500Medium',
+    textDecorationLine: 'underline',
   },
   toggleContainer: {
     flexDirection: 'row',
@@ -112,6 +163,10 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
+  const [showVerification, setShowVerification] = useState(false);
+  const [verificationEmail, setVerificationEmail] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [pendingUserData, setPendingUserData] = useState<NewUser | null>(null);
   
   // Login form state - simplified to only email and password
   const [loginData, setLoginData] = useState<LoginCredentials>({
@@ -133,6 +188,22 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
       return;
     }
 
+    // Check if email is verified (skip for admin)
+    if (loginData.username !== 'admin@admin.com') {
+      const isVerified = await verificationService.isEmailVerified(loginData.username);
+      if (!isVerified) {
+        Alert.alert(
+          'Email ma xaqiijin',
+          'Fadlan xaqiiji email-kaaga ka hor inta aadan gelin.',
+          [
+            { text: 'Dib u dir', onPress: () => sendVerificationForLogin() },
+            { text: 'Dib u celi', style: 'cancel' }
+          ]
+        );
+        return;
+      }
+    }
+
     setIsLoading(true);
     try {
       const result = await onLogin(loginData);
@@ -142,6 +213,30 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
     } catch (error) {
       console.error('Login error:', error);
       Alert.alert('Khalad', 'Khalad ayaa dhacay galitaanka');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const sendVerificationForLogin = async () => {
+    if (!loginData.username.trim()) {
+      Alert.alert('Khalad', 'Fadlan gali email-kaaga');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const result = await verificationService.sendVerificationCode(loginData.username);
+      if (result.success) {
+        setVerificationEmail(loginData.username);
+        setShowVerification(true);
+        Alert.alert('Guul', result.message);
+      } else {
+        Alert.alert('Khalad', result.message);
+      }
+    } catch (error) {
+      console.error('Error sending verification:', error);
+      Alert.alert('Khalad', 'Khalad ayaa dhacay dirista lambarka xaqiijinta');
     } finally {
       setIsLoading(false);
     }
@@ -163,11 +258,22 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
       return;
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(registerData.email)) {
+      Alert.alert('Khalad', 'Fadlan gali email sax ah');
+      return;
+    }
+
     setIsLoading(true);
     try {
-      const { confirmPassword, ...userData } = registerData;
-      const result = await onRegister(userData);
+      // Send verification code
+      const result = await verificationService.sendVerificationCode(registerData.email);
       if (result.success) {
+        const { confirmPassword, ...userData } = registerData;
+        setPendingUserData(userData);
+        setVerificationEmail(registerData.email);
+        setShowVerification(true);
         Alert.alert('Guul', result.message);
       } else {
         Alert.alert('Khalad', result.message);
@@ -180,6 +286,117 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
     }
   };
 
+  const handleVerifyCode = async () => {
+    if (!verificationCode.trim()) {
+      Alert.alert('Khalad', 'Fadlan gali lambarka xaqiijinta');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const result = await verificationService.verifyCode(verificationEmail, verificationCode);
+      if (result.success) {
+        Alert.alert('Guul', result.message);
+        
+        // If this was for registration, complete the registration
+        if (pendingUserData) {
+          const registerResult = await onRegister(pendingUserData);
+          if (registerResult.success) {
+            Alert.alert('Guul', 'Diiwaangelinta waa guuleysatay! Hadda waad geli kartaa.');
+            resetVerificationState();
+            setIsLogin(true);
+          } else {
+            Alert.alert('Khalad', registerResult.message);
+          }
+        } else {
+          // This was for login verification
+          resetVerificationState();
+        }
+      } else {
+        Alert.alert('Khalad', result.message);
+      }
+    } catch (error) {
+      console.error('Verification error:', error);
+      Alert.alert('Khalad', 'Khalad ayaa dhacay xaqiijinta');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResendCode = async () => {
+    setIsLoading(true);
+    try {
+      const result = await verificationService.sendVerificationCode(verificationEmail);
+      if (result.success) {
+        Alert.alert('Guul', result.message);
+        setVerificationCode('');
+      } else {
+        Alert.alert('Khalad', result.message);
+      }
+    } catch (error) {
+      console.error('Resend error:', error);
+      Alert.alert('Khalad', 'Khalad ayaa dhacay dib u dirista lambarka');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resetVerificationState = () => {
+    setShowVerification(false);
+    setVerificationEmail('');
+    setVerificationCode('');
+    setPendingUserData(null);
+  };
+
+  const renderVerificationForm = () => (
+    <View style={styles.verificationContainer}>
+      <Text style={styles.verificationTitle}>Xaqiiji Email-kaaga</Text>
+      <Text style={styles.verificationText}>
+        Lambar xaqiijin ah ayaa loo diray {verificationEmail}. Fadlan gali lambarka hoose:
+      </Text>
+      
+      <View style={styles.codeInputContainer}>
+        <TextInput
+          style={styles.codeInput}
+          placeholder="000000"
+          placeholderTextColor={colors.grey}
+          value={verificationCode}
+          onChangeText={setVerificationCode}
+          keyboardType="numeric"
+          maxLength={6}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+      </View>
+
+      <Button
+        text={isLoading ? "Xaqiijinaya..." : "Xaqiiji"}
+        onPress={handleVerifyCode}
+        disabled={isLoading}
+        style={{ marginBottom: 12 }}
+      />
+
+      <TouchableOpacity 
+        style={styles.resendButton} 
+        onPress={handleResendCode}
+        disabled={isLoading}
+      >
+        <Text style={styles.resendButtonText}>
+          Dib u dir lambarka xaqiijinta
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity 
+        style={[styles.resendButton, { marginTop: 8 }]} 
+        onPress={resetVerificationState}
+      >
+        <Text style={[styles.resendButtonText, { color: colors.textSecondary }]}>
+          Dib u celi
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   const renderLoginForm = () => (
     <View style={styles.form}>
       <View style={styles.inputContainer}>
@@ -190,7 +407,7 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
             focusedInput === 'email' && styles.inputFocused
           ]}
           placeholder="Gali email-kaaga"
-          placeholderTextColor={colors.textSecondary}
+          placeholderTextColor={colors.grey}
           value={loginData.username}
           onChangeText={(text) => setLoginData({ ...loginData, username: text })}
           onFocus={() => setFocusedInput('email')}
@@ -209,7 +426,7 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
             focusedInput === 'password' && styles.inputFocused
           ]}
           placeholder="Gali lambarka sirta ah"
-          placeholderTextColor={colors.textSecondary}
+          placeholderTextColor={colors.grey}
           value={loginData.password}
           onChangeText={(text) => setLoginData({ ...loginData, password: text })}
           onFocus={() => setFocusedInput('password')}
@@ -239,7 +456,7 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
             focusedInput === 'reg_username' && styles.inputFocused
           ]}
           placeholder="Dooro magac isticmaalaha"
-          placeholderTextColor={colors.textSecondary}
+          placeholderTextColor={colors.grey}
           value={registerData.username}
           onChangeText={(text) => setRegisterData({ ...registerData, username: text })}
           onFocus={() => setFocusedInput('reg_username')}
@@ -257,7 +474,7 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
             focusedInput === 'email' && styles.inputFocused
           ]}
           placeholder="Gali email-kaaga"
-          placeholderTextColor={colors.textSecondary}
+          placeholderTextColor={colors.grey}
           value={registerData.email}
           onChangeText={(text) => setRegisterData({ ...registerData, email: text })}
           onFocus={() => setFocusedInput('email')}
@@ -276,7 +493,7 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
             focusedInput === 'reg_password' && styles.inputFocused
           ]}
           placeholder="Samee furaha sirta ah (ugu yaraan 6 xaraf)"
-          placeholderTextColor={colors.textSecondary}
+          placeholderTextColor={colors.grey}
           value={registerData.password}
           onChangeText={(text) => setRegisterData({ ...registerData, password: text })}
           onFocus={() => setFocusedInput('reg_password')}
@@ -295,7 +512,7 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
             focusedInput === 'confirm_password' && styles.inputFocused
           ]}
           placeholder="Ku celi lambarka sirta ah"
-          placeholderTextColor={colors.textSecondary}
+          placeholderTextColor={colors.grey}
           value={registerData.confirmPassword}
           onChangeText={(text) => setRegisterData({ ...registerData, confirmPassword: text })}
           onFocus={() => setFocusedInput('confirm_password')}
@@ -314,6 +531,29 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
       />
     </View>
   );
+
+  if (showVerification) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView 
+          contentContainerStyle={styles.content} 
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.header}>
+            <View style={styles.logo}>
+              <Icon name="mail" size={40} color="white" />
+            </View>
+            <Text style={styles.title}>Xaqiijinta Email-ka</Text>
+            <Text style={styles.subtitle}>
+              Fadlan xaqiiji email-kaaga si aad u sii waddo
+            </Text>
+          </View>
+
+          {renderVerificationForm()}
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -349,7 +589,8 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
             <Text style={styles.adminNoteText}>
               <Text style={{ fontWeight: '600' }}>Xusuusin:</Text> Admin-ka default-ka ah:{'\n'}
               Email: admin@admin.com{'\n'}
-              Lambarka sirta ah: admin123
+              Lambarka sirta ah: admin123{'\n\n'}
+              <Text style={{ fontWeight: '600' }}>Muhiim:</Text> Email xaqiijinta waa lagama maarmaan ah dhammaan isticmaalayaasha cusub.
             </Text>
           </View>
         )}

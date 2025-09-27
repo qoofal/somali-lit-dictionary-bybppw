@@ -76,11 +76,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   input: {
-    backgroundColor: colors.background,
+    backgroundColor: colors.skyBlue,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-    color: colors.text,
+    color: colors.background,
     borderWidth: 1,
     borderColor: colors.border,
     fontFamily: 'Inter_400Regular',
@@ -227,7 +227,7 @@ export default function CategoryManagement({ isVisible, onClose, entries }: Cate
                 focusedInput === 'category' && styles.inputFocused
               ]}
               placeholder="Magaca qaybta cusub"
-              placeholderTextColor={colors.textSecondary}
+              placeholderTextColor={colors.grey}
               value={newCategoryName}
               onChangeText={setNewCategoryName}
               onFocus={() => setFocusedInput('category')}
