@@ -163,20 +163,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontFamily: 'Inter_600SemiBold',
   },
-  adminNote: {
-    backgroundColor: colors.backgroundAlt,
-    padding: 16,
-    borderRadius: 12,
-    marginTop: 24,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.primary,
-  },
-  adminNoteText: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    fontFamily: 'Inter_400Regular',
-    lineHeight: 20,
-  },
 });
 
 export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
@@ -644,20 +630,6 @@ export default function AuthScreen({ onLogin, onRegister }: AuthScreenProps) {
             </Text>
           </TouchableOpacity>
         </View>
-
-        {isLogin && (
-          <View style={styles.adminNote}>
-            <Text style={styles.adminNoteText}>
-              <Text style={{ fontWeight: '600' }}>Xusuusin:</Text> Admin-ka default-ka ah:{'\n'}
-              Email: admin@admin.com{'\n'}
-              Lambarka sirta ah: admin123{'\n\n'}
-              <Text style={{ fontWeight: '600' }}>Admin cusub:</Text>{'\n'}
-              Email: qoofaljabshe@gmail.com{'\n'}
-              Lambarka sirta ah: Qoofal123{'\n\n'}
-              <Text style={{ fontWeight: '600' }}>Muhiim:</Text> Email xaqiijinta waa lagama maarmaan ah dhammaan isticmaalayaasha cusub.
-            </Text>
-          </View>
-        )}
       </ScrollView>
     </SafeAreaView>
   );
